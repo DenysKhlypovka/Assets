@@ -4,14 +4,18 @@ using UnityEngine.SceneManagement;
 
 public class CharacterControllerScript : MonoBehaviour
 {
-	public Rigidbody2D rb;
+	private const int DURATION = 1; 
+	private static bool IsInputEnabled = true;
+
 	public Transform groundCheck;
 	public LayerMask whatIsGround;
 
+	private Rigidbody2D rb;
 	private Animator anim;
 
 	private bool isGrounded = false;
 	private bool isFacingRight = true;
+	private bool visible = true;
 
 	private float groundRadius = 0.2f;
 	public float maxSpeed = 6f; 
@@ -23,34 +27,44 @@ public class CharacterControllerScript : MonoBehaviour
 	{
 		rb = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
+
+		anim.SetBool("Visible", true);
+
 	}
 
 
 	private void Update()
 	{
-		//isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
-		//anim.SetBool ("Ground", isGrounded);
+		if (!IsInputEnabled)
+			return;
+		isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
+		anim.SetBool ("Ground", isGrounded);
 		anim.SetFloat ("vSpeed", rb.velocity.y);
 
 		float move = Input.GetAxisRaw("Horizontal");
 
-		if(move > 0 && !isFacingRight)
+		if(move > 0 && !isFacingRight)		//FLIP ANIM
 			Flip();
 		else if (move < 0 && isFacingRight)
 			Flip();
 
-		//if (!isGrounded)
-	//		return;
 		anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-
 		rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
 
-	//	if (isGrounded && Input.GetKeyDown (KeyCode.Space)) 
-	//	{
-	//		anim.SetBool("Ground", false);
-	//		rb.AddForce(new Vector2(0, vForce));				
-	//	}
-			
+
+		if (visible && isGrounded && Input.GetKeyDown (KeyCode.Space)) //JUMP
+		{
+			anim.SetBool("Ground", false);
+			rb.AddForce(new Vector2(0, vForce));				
+		}
+
+		if (!visible && Input.GetAxisRaw("Horizontal") != 0) 
+		{
+			visible = true;
+			anim.SetBool("Visible", visible);		
+		//	anim.SetBool("Table", true);		
+		//	anim.SetBool("Closet", true);	
+		}
 	}
 
 
@@ -60,5 +74,32 @@ public class CharacterControllerScript : MonoBehaviour
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
+	}
+
+	public void Hide(bool cover)
+	{
+		if (!Input.GetKeyDown (KeyCode.H))
+			return;
+
+		string coverType = "Table";
+		if (!cover)
+			coverType = "Closet";
+
+		visible = false;
+
+		anim.SetBool("Visible", visible);		
+
+		StartCoroutine(HideDelay());
+
+	//	anim.SetBool(coverType, true);		
+
+	}
+
+	IEnumerator HideDelay()
+	{
+		IsInputEnabled = false;
+		rb.velocity = new Vector2(0, -20);
+		yield return new WaitForSecondsRealtime(DURATION); 
+		IsInputEnabled = true;
 	}
 }

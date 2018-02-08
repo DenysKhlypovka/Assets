@@ -1,11 +1,14 @@
 fileFormatVersion: 2
-guid: 6bac8589c5fdb9d47b888b803c04b80c
-timeCreated: 1518113225
+guid: 772c335da9562b64eb425ea5a7285c6b
+timeCreated: 1518111800
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: table_0
-    21300002: table_1
+    21300000: Idle_2_0
+    21300002: Idle_2_1
+    21300004: Idle_2_2
+    21300006: Idle_2_3
+    21300008: Idle_2_4
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -80,28 +83,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: table_0
+      name: Idle_2_0
       rect:
         serializedVersion: 2
-        x: 1344
+        x: 1206
         y: 6
-        width: 117
-        height: 81
+        width: 57
+        height: 186
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Idle_2_1
+      rect:
+        serializedVersion: 2
+        x: 1332
+        y: 6
+        width: 57
+        height: 186
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: table_1
+      name: Idle_2_2
       rect:
         serializedVersion: 2
-        x: 1494
+        x: 1455
         y: 6
-        width: 75
-        height: 75
+        width: 57
+        height: 186
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Idle_2_3
+      rect:
+        serializedVersion: 2
+        x: 1584
+        y: 6
+        width: 57
+        height: 186
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Idle_2_4
+      rect:
+        serializedVersion: 2
+        x: 1716
+        y: 6
+        width: 57
+        height: 186
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

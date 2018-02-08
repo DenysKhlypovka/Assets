@@ -1,11 +1,12 @@
 fileFormatVersion: 2
-guid: 6bac8589c5fdb9d47b888b803c04b80c
-timeCreated: 1518113225
+guid: 5361a5c2ea05c2a478c1b04829f90c36
+timeCreated: 1518111747
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: table_0
-    21300002: table_1
+    21300000: GCcover_0
+    21300002: GCcover_1
+    21300004: GCcover_2
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -80,28 +81,41 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: table_0
+      name: GCcover_0
       rect:
         serializedVersion: 2
-        x: 1344
+        x: 1305
         y: 6
-        width: 117
-        height: 81
+        width: 162
+        height: 183
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: table_1
+      name: GCcover_1
       rect:
         serializedVersion: 2
-        x: 1494
+        x: 1470
         y: 6
-        width: 75
-        height: 75
+        width: 189
+        height: 186
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: GCcover_2
+      rect:
+        serializedVersion: 2
+        x: 1665
+        y: 6
+        width: 195
+        height: 186
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

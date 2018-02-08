@@ -1,11 +1,16 @@
 fileFormatVersion: 2
-guid: 6bac8589c5fdb9d47b888b803c04b80c
-timeCreated: 1518113225
+guid: 7859845ea8d38fb4e833e6d6a80f7d54
+timeCreated: 1518111937
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: table_0
-    21300002: table_1
+    21300000: shot_0
+    21300002: shot_1
+    21300004: shot_2
+    21300006: shot_3
+    21300008: shot_4
+    21300010: shot_5
+    21300012: shot_6
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -80,28 +85,93 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: table_0
+      name: shot_0
       rect:
         serializedVersion: 2
-        x: 1344
-        y: 6
-        width: 117
-        height: 81
+        x: 69
+        y: 0
+        width: 112
+        height: 192
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: table_1
+      name: shot_1
       rect:
         serializedVersion: 2
-        x: 1494
-        y: 6
-        width: 75
-        height: 75
+        x: 186
+        y: 0
+        width: 130
+        height: 192
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: shot_2
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 0
+        width: 162
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: shot_3
+      rect:
+        serializedVersion: 2
+        x: 501
+        y: 0
+        width: 166
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: shot_4
+      rect:
+        serializedVersion: 2
+        x: 726
+        y: 0
+        width: 167
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: shot_5
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 0
+        width: 162
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: shot_6
+      rect:
+        serializedVersion: 2
+        x: 1194
+        y: 0
+        width: 159
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
