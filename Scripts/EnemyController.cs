@@ -37,10 +37,12 @@ public class EnemyController : MonoBehaviour {
 		}
 
 		anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+
+
 		
 	}
 
-	private void Flip()
+	public void Flip()
 	{
 		isFacingRight = !isFacingRight;
 		Vector3 theScale = transform.localScale;

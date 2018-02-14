@@ -10,6 +10,7 @@ public class CharacterControllerScript : MonoBehaviour
 	public Transform groundCheck;
 	public LayerMask whatIsGround;
 
+	private CapsuleCollider2D collider;
 	private Rigidbody2D rb;
 	private Animator anim;
 
@@ -25,6 +26,7 @@ public class CharacterControllerScript : MonoBehaviour
 
 	private void Start()
 	{
+		collider = GetComponent<CapsuleCollider2D> ();
 		rb = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
 
@@ -60,6 +62,7 @@ public class CharacterControllerScript : MonoBehaviour
 
 		if (!visible && Input.GetAxisRaw("Horizontal") != 0) 
 		{
+			SwitchIgnoreCollisions (false);
 			visible = true;
 			anim.SetBool("Visible", visible);		
 		//	anim.SetBool("Table", true);		
@@ -78,13 +81,14 @@ public class CharacterControllerScript : MonoBehaviour
 
 	public void Hide(bool cover)
 	{
-		if (!Input.GetKeyDown (KeyCode.H))
+		if (!Input.GetKeyDown (KeyCode.E))
 			return;
 
 		string coverType = "Table";
 		if (!cover)
 			coverType = "Closet";
 
+		SwitchIgnoreCollisions (true);
 		visible = false;
 
 		anim.SetBool("Visible", visible);		
@@ -95,11 +99,25 @@ public class CharacterControllerScript : MonoBehaviour
 
 	}
 
+	public bool IsVisible()
+	{
+		return visible;
+	}
+
 	IEnumerator HideDelay()
 	{
 		IsInputEnabled = false;
 		rb.velocity = new Vector2(0, -20);
 		yield return new WaitForSecondsRealtime(DURATION); 
 		IsInputEnabled = true;
+	}
+
+	void SwitchIgnoreCollisions(bool ignore)
+	{
+		GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
+		foreach (GameObject enemy in enemies) {
+			CapsuleCollider2D colliderEnemy = enemy.GetComponent<CapsuleCollider2D> ();
+			Physics2D.IgnoreCollision (collider, colliderEnemy, ignore);
+		}
 	}
 }
