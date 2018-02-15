@@ -22,15 +22,14 @@ public class Raycast : MonoBehaviour {
 		Vector2 forward = transform.TransformDirection (Vector2.right) * 3; 
 
 
-		//Debug.Log (LayerMask.NameToLayer("player"));
 		for (int i = -1; i < 2; i++) {
 			forward.y = i;
 			Debug.DrawRay (transform.position, forward, Color.green);
 			RaycastHit2D hit = Physics2D.Raycast (transform.position, forward, raycastDistance, layerMask);
 			if (hit && playerScript.IsVisible()) {
-				carrierScript.Flip ();
+				carrierScript.Kill ();
 				distance = hit.distance;
-				Debug.Log (i + ") " + distance + " " + hit.collider.gameObject.name);
+				//Debug.Log (i + ") " + distance + " " + hit.collider.gameObject.name);
 			}
 		}
 	}

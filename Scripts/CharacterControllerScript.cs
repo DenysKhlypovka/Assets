@@ -6,6 +6,8 @@ public class CharacterControllerScript : MonoBehaviour
 {
 	private const int DURATION = 1; 
 	private static bool IsInputEnabled = true;
+	private Vector3 translation = new Vector3(0, 0, 2f);
+	private Vector3 translationUnhide = new Vector3(0, 0, -2f);
 
 	public Transform groundCheck;
 	public LayerMask whatIsGround;
@@ -13,19 +15,21 @@ public class CharacterControllerScript : MonoBehaviour
 	private CapsuleCollider2D collider;
 	private Rigidbody2D rb;
 	private Animator anim;
+	private GameObject hands;
 
-	private bool isGrounded = false;
+//	private bool isGrounded = false;
 	private bool isFacingRight = true;
 	private bool visible = true;
 
 	private float groundRadius = 0.2f;
 	public float maxSpeed = 6f; 
 
-	public int vForce = 250;
+//	public int vForce = 250;
 
 
 	private void Start()
 	{
+		hands = this.gameObject.transform.GetChild(1).gameObject;
 		collider = GetComponent<CapsuleCollider2D> ();
 		rb = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
@@ -39,9 +43,9 @@ public class CharacterControllerScript : MonoBehaviour
 	{
 		if (!IsInputEnabled)
 			return;
-		isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
-		anim.SetBool ("Ground", isGrounded);
-		anim.SetFloat ("vSpeed", rb.velocity.y);
+	//	isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
+	//	anim.SetBool ("Ground", isGrounded);
+	//	anim.SetFloat ("vSpeed", rb.velocity.y);
 
 		float move = Input.GetAxisRaw("Horizontal");
 
@@ -54,24 +58,22 @@ public class CharacterControllerScript : MonoBehaviour
 		rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
 
 
-		if (visible && isGrounded && Input.GetKeyDown (KeyCode.Space)) //JUMP
-		{
-			anim.SetBool("Ground", false);
-			rb.AddForce(new Vector2(0, vForce));				
-		}
+	//	if (visible && isGrounded && Input.GetKeyDown (KeyCode.Space)) //JUMP
+	//		{
+	//		anim.SetBool("Ground", false);
+	//		rb.AddForce(new Vector2(0, vForce));				
+	//	}
 
 		if (!visible && Input.GetAxisRaw("Horizontal") != 0) 
-		{
-			SwitchIgnoreCollisions (false);
-			visible = true;
-			anim.SetBool("Visible", visible);		
-		//	anim.SetBool("Table", true);		
-		//	anim.SetBool("Closet", true);	
-		}
+			Unhide ();
 	}
 
+	public bool IsFacingRight()
+	{
+		return isFacingRight;
+	}
 
-	private void Flip()
+	public void Flip()
 	{
 		isFacingRight = !isFacingRight;
 		Vector3 theScale = transform.localScale;
@@ -79,9 +81,21 @@ public class CharacterControllerScript : MonoBehaviour
 		transform.localScale = theScale;
 	}
 
+	public void Unhide()
+	{
+
+		SwitchIgnoreCollisions (false);
+		visible = true;
+		anim.SetBool("Visible", visible);		
+		hands.SetActive (true);		
+		this.transform.Translate(translationUnhide);
+		//	anim.SetBool("Table", true);		
+		//	anim.SetBool("Closet", true);	
+	}
+
 	public void Hide(bool cover)
 	{
-		if (!Input.GetKeyDown (KeyCode.E))
+		if (!(Input.GetKeyDown (KeyCode.E) && IsInputEnabled))
 			return;
 
 		string coverType = "Table";
@@ -90,8 +104,11 @@ public class CharacterControllerScript : MonoBehaviour
 
 		SwitchIgnoreCollisions (true);
 		visible = false;
+		anim.SetBool("Visible", visible);	
+		this.transform.Translate(translation);
 
-		anim.SetBool("Visible", visible);		
+		hands.SetActive (false);
+
 
 		StartCoroutine(HideDelay());
 
