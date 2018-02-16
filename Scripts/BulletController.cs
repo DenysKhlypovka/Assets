@@ -16,7 +16,11 @@ public class BulletController : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		
+		if (coll.tag == "Player") {
+			coll.gameObject.GetComponent<CharacterControllerScript> ().ApplyDamage ();
+			Destroy(this.gameObject);
+		}
+
 		if (coll.tag == "enemy") {
 			string areaOfApplication = "unknown";
 
@@ -28,7 +32,7 @@ public class BulletController : MonoBehaviour {
 			coll.gameObject.GetComponent<EnemyController> ().ApplyDamage (areaOfApplication);
 			Destroy(this.gameObject);
 		}
-		if (coll.tag == "ground")
+		if (coll.gameObject.layer == 10)
 			Destroy(this.gameObject);
 	}
 }

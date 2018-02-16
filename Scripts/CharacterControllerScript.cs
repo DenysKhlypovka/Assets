@@ -10,9 +10,6 @@ public class CharacterControllerScript : MonoBehaviour
 	private Vector3 translation = new Vector3(0, 0, 2f);
 	private Vector3 translationUnhide = new Vector3(0, 0, -2f);
 
-	public Transform groundCheck;
-	public LayerMask whatIsGround;
-
 	private CapsuleCollider2D collider;
 	private Rigidbody2D rb;
 	private Animator anim;
@@ -24,7 +21,7 @@ public class CharacterControllerScript : MonoBehaviour
 	private bool visible = true;
 
 //	private float groundRadius = 0.2f;
-	public float maxSpeed = 6f; 
+	public float maxSpeed = 5f; 
 	public int maxHealth = 5;
 	public int maxBullets = 8;
 
@@ -40,7 +37,7 @@ public class CharacterControllerScript : MonoBehaviour
 		currentHealth = maxHealth;
 		currentBullets = maxBullets;
 
-		hands = this.gameObject.transform.GetChild(1).gameObject;
+		hands = this.gameObject.transform.GetChild(0).gameObject;
 		collider = GetComponent<CapsuleCollider2D> ();
 		rb = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
