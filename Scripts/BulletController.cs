@@ -16,10 +16,23 @@ public class BulletController : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		Debug.Log ("trigger entered");
-		if (coll.tag == "enemy")
-			coll.gameObject.GetComponent<EnemyController> ().Kill();
-		if (coll.tag == "enemy" || coll.tag == "ground")
+		if (coll.tag == "Player") {
+			coll.gameObject.GetComponent<CharacterControllerScript> ().ApplyDamage ();
+			Destroy(this.gameObject);
+		}
+
+		if (coll.tag == "enemy") {
+			string areaOfApplication = "unknown";
+
+			if (coll.GetType () == typeof(CapsuleCollider2D))
+				areaOfApplication = "body";
+			if (coll.GetType () == typeof(CircleCollider2D))
+				areaOfApplication = "head";
+
+			coll.gameObject.GetComponent<EnemyController> ().ApplyDamage (areaOfApplication);
+			Destroy(this.gameObject);
+		}
+		if (coll.gameObject.layer == 10)
 			Destroy(this.gameObject);
 	}
 }

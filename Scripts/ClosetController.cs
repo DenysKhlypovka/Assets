@@ -21,7 +21,8 @@ public class ClosetController : MonoBehaviour {
 
 		CharacterControllerScript playerScript = GameObject.FindWithTag ("Player").GetComponent<CharacterControllerScript>();
 
-		playerScript.Hide (false);// table = true
+
+		playerScript.Hide (false, this.gameObject.transform.position.x);// table = true
 
 	}
 }

@@ -19,11 +19,11 @@ public class TableController : MonoBehaviour {
 		if (other.GetComponent<CharacterControllerScript> () == null)
 			return;
 
-		CharacterControllerScript playerScript = GameObject.FindWithTag ("Player").GetComponent<CharacterControllerScript>();
+	//	CharacterControllerScript playerScript = GameObject.FindWithTag ("Player").GetComponent<CharacterControllerScript>();
 
 
 
-		playerScript.Hide (true);// false = closet
+	//	playerScript.Hide (true);// false = closet
 
 	}
 }
