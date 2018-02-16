@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class rookee : MonoBehaviour {
-	
+
+
+	private const int RELOAD_DURATION = 2; 
+
 	private Camera cam;
 	private Transform my;
 	private Rigidbody2D body;
@@ -14,6 +17,8 @@ public class rookee : MonoBehaviour {
 
 	//private int delta = 90;
 	private int viewAngle = 90;
+	private int multip = 1;
+	private bool isShootingEnabled = true;
 
 	public float bulletForceDiv;
 
@@ -33,7 +38,7 @@ public class rookee : MonoBehaviour {
 	void Update () {
 
 		if (Input.GetKeyDown (KeyCode.E))
-			Debug.Log ("zdarowa");
+			Debug.Log ("zdarowa from the closet");
 
 
 		// Distance from camera to object.  We need this to get the proper calculation.
@@ -45,11 +50,13 @@ public class rookee : MonoBehaviour {
 		float AngleRad = Mathf.Atan2 (mouse.y - my.position.y, mouse.x - my.position.x);
 		float angle = (180 / Mathf.PI) * AngleRad;
 
+
 		if (playerScript.IsFacingRight ()) {
 			if (angle > viewAngle)
 				angle = viewAngle;
 			if (angle < -viewAngle)
 				angle = -viewAngle;
+			multip = 1;
 		} else {
 			if (angle > -viewAngle && angle < 0) {
 				angle = viewAngle;
@@ -61,11 +68,26 @@ public class rookee : MonoBehaviour {
 				else
 					angle += 180;
 			}
+			multip = -1;
 		}
 
+		if (Input.GetKeyDown (KeyCode.R) && !playerScript.IsMagazineFull()) {
+			StartCoroutine (Reloading ());
+			return;
+		}
 
+	//	Debug.Log (isShootingEnabled);
+		if (Input.GetMouseButtonDown (0) && isShootingEnabled) {
 
-		if (Input.GetMouseButtonDown (0)) {
+			if (!playerScript.ShootBullet ()) {
+				StartCoroutine(Reloading());
+				return;
+			}
+
+			float newAngleRad = (angle * Mathf.PI) / 180;
+
+			Vector2 bulletDirection = new Vector2 (Mathf.Cos(newAngleRad) / bulletForceDiv, Mathf.Sin(newAngleRad) / bulletForceDiv);
+
 			//The Bullet instantiation happens here.
 			GameObject Temporary_Bullet_Handler;
 			Temporary_Bullet_Handler = Instantiate(bullet,bulletEmitter.transform.position,bulletEmitter.transform.rotation) as GameObject;
@@ -79,14 +101,25 @@ public class rookee : MonoBehaviour {
 			Temporary_RigidBody = Temporary_Bullet_Handler.GetComponent<Rigidbody2D>();
 
 			//Tell the bullet to be "pushed" forward by an amount set by Bullet_Forward_Force.
-			Temporary_RigidBody.AddForce(new Vector2(Mathf.Cos(AngleRad) / bulletForceDiv, Mathf.Sin(AngleRad) / bulletForceDiv));
+			Temporary_RigidBody.AddForce(bulletDirection * multip);
 
 			//Basic Clean Up, set the Bullets to self destruct after 10 Seconds, I am being VERY generous here, normally 3 seconds is plenty.
 			Destroy(Temporary_Bullet_Handler, 10.0f);
 		}
 
+	//	body.MoveRotation (angle);
+		body.rotation  = angle;
 
-
-		body.rotation = angle;
+	//	Debug.Log ("Velocity: " + Input.GetAxisRaw("Horizontal"));
+		//Debug.Log ($"Angle: {angle} Body Rotation: {body.rotation}");
 	}
+
+	IEnumerator Reloading()
+	{
+		isShootingEnabled = false;
+		playerScript.Reload ();
+		yield return new WaitForSecondsRealtime(RELOAD_DURATION); 
+		isShootingEnabled = true;
+	}
+
 }

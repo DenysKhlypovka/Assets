@@ -9,23 +9,34 @@ public class EnemyController : MonoBehaviour {
 	private Animator anim;
 	private Rigidbody2D rb;
 	private GameObject ray;
-	private CapsuleCollider2D coll;
+	private CapsuleCollider2D colliderBody;
+	private CircleCollider2D colliderHead;
 
 	public float maxTime = 3f;
 	public float maxSpeed = 6f; 
+	public int maxHealth = 2;
+	public float bulletForceDiv;
 
+	private int currentHealth;
 	private bool isDead = false;
 	private bool isFacingRight = true;
 	private float time = 0;
 
+
+	private GameObject bulletEmitter;
+	public GameObject bullet;
+
+
 	// Use this for initialization
 	void Start () 
 	{
-		
+		currentHealth = maxHealth;
 		ray = this.gameObject.transform.GetChild(0).gameObject;
+		bulletEmitter = this.gameObject.transform.GetChild(0).gameObject;
 		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody2D>();
-		coll = GetComponent<CapsuleCollider2D>();
+		colliderBody = GetComponent<CapsuleCollider2D>();
+		colliderHead = GetComponent<CircleCollider2D>();
 
 
 		for (int i = 0; i < 4; i++) {
@@ -62,13 +73,56 @@ public class EnemyController : MonoBehaviour {
 		
 	}
 
+	public void Shoot(){
+
+		anim.SetTrigger ("Shoot");
+
+		//The Bullet instantiation happens here.
+		GameObject Temporary_Bullet_Handler;
+		Temporary_Bullet_Handler = Instantiate(bullet,bulletEmitter.transform.position,bulletEmitter.transform.rotation) as GameObject;
+
+		//Sometimes bullets may appear rotated incorrectly due to the way its pivot was set from the original modeling package.
+		//This is EASILY corrected here, you might have to rotate it from a different axis and or angle based on your particular mesh.
+		Temporary_Bullet_Handler.transform.Rotate(Vector2.right);
+
+		//Retrieve the Rigidbody component from the instantiated Bullet and control it.
+		Rigidbody2D Temporary_RigidBody;
+		Temporary_RigidBody = Temporary_Bullet_Handler.GetComponent<Rigidbody2D>();
+
+		//Tell the bullet to be "pushed" forward by an amount set by Bullet_Forward_Force.
+		Temporary_RigidBody.AddForce(transform.right / bulletForceDiv);
+
+		//Basic Clean Up, set the Bullets to self destruct after 10 Seconds, I am being VERY generous here, normally 3 seconds is plenty.
+		Destroy(Temporary_Bullet_Handler, 10.0f);
+	}
+
+	public void ApplyDamage(string area){
+
+		if (area == "unknown")
+			return;
+
+		if (area == "head")
+			currentHealth -= 2;
+		if (area == "body")
+			currentHealth --;
+
+		CheckIfDead(area);
+	}
+
+	private void CheckIfDead(string latestHitArea)
+	{
+		if (currentHealth <= 0)
+			Kill ();
+	}
+
 	public void Kill()
 	{
 		if (isDead)
 			return;
 		isDead = true;
 		Destroy (ray);
-		Destroy (coll);
+		Destroy (colliderBody);
+		Destroy (colliderHead);
 		Destroy (rb);
 		anim.SetTrigger ("Killed");
 		StartCoroutine (Dying());
