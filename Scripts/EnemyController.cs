@@ -12,13 +12,17 @@ public class EnemyController : MonoBehaviour {
 	private GameObject ray;
 	private CapsuleCollider2D colliderBody;
 	private CircleCollider2D colliderHead;
+	private CharacterControllerScript playerScript;
 
 	public float idleTime = 2;
 	public float patrolDistance = 3f;
 	public float maxSpeed = 4f; 
-	public int maxHealth = 2;
-	public float bulletForceDiv;
 	public float maxPursueTime = 4f;
+	public float bulletForceDiv;
+
+	public int maxHealth = 3;
+	public int damageToHead = 3;
+	public int damageToBody = 1;
 
 	private float leftPosPatrol;
 	private float rightPosPatrol;
@@ -32,6 +36,8 @@ public class EnemyController : MonoBehaviour {
 	private bool isAllowedToShoot = true;
 	private bool animationDelayBool = true;
 	private bool isTriggerRefreshed = true;
+	private bool isInFrontOfWall = false;
+	private bool isGoingToPlayer = false;
 
 
 	private GameObject bulletEmitter;
@@ -41,6 +47,7 @@ public class EnemyController : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		playerScript = GameObject.Find ("player").GetComponent<CharacterControllerScript>();
 
 		leftPosPatrol = this.transform.position.x - patrolDistance;
 		rightPosPatrol = this.transform.position.x + patrolDistance;
@@ -66,12 +73,21 @@ public class EnemyController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	//	Debug.Log ($"isdetected: {isPlayerDetected}; isidle: {isIdle}; ppt: {playerPursueTimer}");
+
 		if (isDead)
 			return;
 
 		playerPursueTimer -= Time.deltaTime;
 		
 		anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+
+
+		if (isGoingToPlayer) {
+			GoToPlayer ();
+			return;
+		}
+		
 
 		if (isIdle && !isPlayerDetected)
 			return;
@@ -82,31 +98,62 @@ public class EnemyController : MonoBehaviour {
 			Pursue ();
 		if (isPlayerDetected)
 			Attack ();
+
 		
 
 	}
 
+	private void GoToPlayer()
+	{
+		if (isPlayerDetected || !playerScript.IsVisible ())
+			isGoingToPlayer = false;
+
+		float playerPosX = playerScript.gameObject.transform.position.x;
+		float posX = this.gameObject.transform.position.x;
+
+		if ((playerPosX > posX && !isFacingRight) || (playerPosX < posX && isFacingRight))
+			Flip ();
+
+
+
+		//Debug.Log (isGoingToPlayer);
+
+		Move ();
+	}
+
 	private void Patrol()
 	{
+
+		//Debug.Log (isInFrontOfWall);
+
 		float posX = transform.position.x;
+
+		//Debug.Log ($"pos X: {posX}; lpp: {leftPosPatrol}; rpp: {rightPosPatrol}; isfacing: {isFacingRight}; isinfron: {isInFrontOfWall}");
 
 		if (posX < rightPosPatrol && isFacingRight) {
 			Move ();
+		}
+
+		if (posX < leftPosPatrol && posX < rightPosPatrol && !isFacingRight) {
+			Idle ();
+		}
+
+		if (posX > rightPosPatrol && posX > leftPosPatrol && isFacingRight) {
+			Idle ();
 		}
 
 		if (posX > leftPosPatrol && !isFacingRight) {
 			Move ();
 		}
 
-		if (Mathf.Round(posX) == Mathf.Round(leftPosPatrol) && !isFacingRight) {
+		if ((Mathf.Round(posX) == Mathf.Round(leftPosPatrol) && !isFacingRight) || isInFrontOfWall){
 			Idle ();
 		}
 
-		if (Mathf.Round(posX) == Mathf.Round(rightPosPatrol) && isFacingRight)
+		if ((Mathf.Round(posX) == Mathf.Round(rightPosPatrol) && isFacingRight) || isInFrontOfWall)
 		{
 			Idle ();
 		}
-
 
 	}
 
@@ -118,22 +165,26 @@ public class EnemyController : MonoBehaviour {
 
 	private void Pursue()
 	{
+	//	Debug.Log (playerPursueTimer);
 		isAllowedToShoot = true;
 		animationDelayBool = true;
 		isTriggerRefreshed = true;
 		Move ();
+
 	}
 
-	void Idle()
+	private void Idle()
 	{
 		StartCoroutine (Idling());
 	}
 
 	IEnumerator Idling()
 	{
+		isInFrontOfWall = false;
 		isIdle = true;
 		yield return new WaitForSecondsRealtime(idleTime); 
 		isIdle = false;
+		Debug.Log ("zdarowa from idling corou");
 		Flip ();
 	}
 
@@ -153,6 +204,11 @@ public class EnemyController : MonoBehaviour {
 		if (isDetected)
 			playerPursueTimer = maxPursueTime;
 		isPlayerDetected = isDetected;
+	}
+
+	public void SetInFrontOfWall(bool _isInFrontOfWall)
+	{
+		isInFrontOfWall = _isInFrontOfWall;
 	}
 
 	public void Shoot(){
@@ -214,11 +270,22 @@ public class EnemyController : MonoBehaviour {
 			return;
 
 		if (area == "head")
-			currentHealth -= 2;
+			currentHealth -= damageToHead;
 		if (area == "body")
-			currentHealth --;
+			currentHealth -= damageToBody;
 
 		CheckIfDead(area);
+
+		DamagedByPlayer ();
+	}
+
+	private void DamagedByPlayer(){
+		isGoingToPlayer = true;
+
+		StopCoroutine (Idling());
+		isIdle = false;
+
+
 	}
 
 	private void CheckIfDead(string latestHitArea)

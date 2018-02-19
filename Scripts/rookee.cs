@@ -51,24 +51,17 @@ public class rookee : MonoBehaviour {
 		float angle = (180 / Mathf.PI) * AngleRad;
 
 
-		if (playerScript.IsFacingRight ()) {
-			if (angle > viewAngle)
-				angle = viewAngle;
-			if (angle < -viewAngle)
-				angle = -viewAngle;
-			multip = 1;
-		} else {
-			if (angle > -viewAngle && angle < 0) {
-				angle = viewAngle;
-			} else if (angle < viewAngle && angle > 0) {
-				angle = -viewAngle;
-			} else {
-				if (angle > 180)
-					angle -= 180;
-				else
-					angle += 180;
-			}
-			multip = -1;
+		if (playerScript.IsFacingRight () && (angle > 90 || angle < -90))
+			playerScript.Flip ();
+
+		if (!playerScript.IsFacingRight () && ((angle > -90 && angle < 0) || (angle < 90 && angle > 0)))
+			playerScript.Flip ();
+
+		if (!playerScript.IsFacingRight ()) {
+			if (angle > 0)
+				angle -= 180;
+			else
+				angle += 180;
 		}
 
 		if (Input.GetKeyDown (KeyCode.R) && !playerScript.IsMagazineFull()) {

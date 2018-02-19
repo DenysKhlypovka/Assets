@@ -68,10 +68,10 @@ public class CharacterControllerScript : MonoBehaviour
 
 		float move = Input.GetAxisRaw("Horizontal");
 
-		if(move > 0 && !isFacingRight)		//FLIP ANIM
-			Flip();
-		else if (move < 0 && isFacingRight)
-			Flip();
+		if ((move > 0 && !isFacingRight) || (move < 0 && isFacingRight))
+			anim.SetBool("Backwards", true);
+		else  
+			anim.SetBool("Backwards", false);
 
 		anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 		rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);

@@ -7,7 +7,8 @@ public class Raycast : MonoBehaviour {
 	CharacterControllerScript playerScript;
 	EnemyController carrierScript;
 
-	public float raycastDistance = 6;
+	public float playerRaycastDistance = 6;
+	public float wallRaycastDistance = 2;
 
 	// Use this for initialization
 	void Start () {
@@ -17,17 +18,23 @@ public class Raycast : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		int layerMask = 512;
+
+		int layerMaskPlayer = 512;
+		int layerMaskWall = 1024;
 		float distance;
 
 		Vector2 forward = transform.TransformDirection (Vector2.right) * 3; 
 
+		RaycastHit2D hitWall = Physics2D.Raycast (transform.position, forward, wallRaycastDistance, layerMaskWall);
+		if (hitWall) 
+			carrierScript.SetInFrontOfWall(true);
+		else
+			carrierScript.SetInFrontOfWall(false);
 
 		for (int i = -1; i < 2; i++) {
 			forward.y = i;
 			Debug.DrawRay (transform.position, forward, Color.green);
-			RaycastHit2D hit = Physics2D.Raycast (transform.position, forward, raycastDistance, layerMask);
+			RaycastHit2D hit = Physics2D.Raycast (transform.position, forward, playerRaycastDistance, layerMaskPlayer);
 			if (hit && playerScript.IsVisible()) {
 				carrierScript.PlayerDetected(true);
 				//distance = hit.distance;
@@ -35,6 +42,7 @@ public class Raycast : MonoBehaviour {
 			}
 			else
 				carrierScript.PlayerDetected(false);
+			}
 		}
 	}
-}
+
