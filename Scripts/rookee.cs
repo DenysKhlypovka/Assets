@@ -14,9 +14,12 @@ public class rookee : MonoBehaviour {
 
 	private GameObject bulletEmitter;
 	public GameObject bullet;
+	public float angle;
+	public float dispersion = 0.3f;
+	public float bulletDestroyDelay = 10.0f;
 
 	//private int delta = 90;
-	private int viewAngle = 90;
+	//private int viewAngle = 90;
 	private int multip = 1;
 	private bool isShootingEnabled = true;
 
@@ -48,7 +51,7 @@ public class rookee : MonoBehaviour {
 		Vector3 mouse = cam.ScreenToWorldPoint  (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, camDis));
 
 		float AngleRad = Mathf.Atan2 (mouse.y - my.position.y, mouse.x - my.position.x);
-		float angle = (180 / Mathf.PI) * AngleRad;
+		angle = (180 / Mathf.PI) * AngleRad;
 
 
 		if (playerScript.IsFacingRight () && (angle > 90 || angle < -90))
@@ -77,9 +80,14 @@ public class rookee : MonoBehaviour {
 				return;
 			}
 
-			float newAngleRad = (angle * Mathf.PI) / 180;
+			Vector2 playerVelocity = playerScript.gameObject.GetComponent<Rigidbody2D> ().velocity;
+		//	float newAngleRad = (angle * Mathf.PI) / 180;
 
-			Vector2 bulletDirection = new Vector2 (Mathf.Cos(newAngleRad) / bulletForceDiv, Mathf.Sin(newAngleRad) / bulletForceDiv);
+			if (playerVelocity.x > 0)
+				AngleRad += Random.Range (-dispersion, dispersion);
+
+			
+			Vector2 bulletDirection = new Vector2 (Mathf.Cos(AngleRad) / bulletForceDiv, Mathf.Sin(AngleRad) / bulletForceDiv);
 
 			//The Bullet instantiation happens here.
 			GameObject Temporary_Bullet_Handler;
@@ -97,14 +105,12 @@ public class rookee : MonoBehaviour {
 			Temporary_RigidBody.AddForce(bulletDirection * multip);
 
 			//Basic Clean Up, set the Bullets to self destruct after 10 Seconds, I am being VERY generous here, normally 3 seconds is plenty.
-			Destroy(Temporary_Bullet_Handler, 10.0f);
+			Destroy(Temporary_Bullet_Handler, bulletDestroyDelay);
 		}
-
 	//	body.MoveRotation (angle);
-		body.rotation  = angle;
-
+		transform.rotation = Quaternion.Euler(0, 0, angle);
 	//	Debug.Log ("Velocity: " + Input.GetAxisRaw("Horizontal"));
-		//Debug.Log ($"Angle: {angle} Body Rotation: {body.rotation}");
+
 	}
 
 	IEnumerator Reloading()

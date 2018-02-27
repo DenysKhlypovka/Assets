@@ -59,6 +59,8 @@ public class CharacterControllerScript : MonoBehaviour
 	{
 		if (!IsInputEnabled || isDead)
 			return;
+
+
 	//	isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
 	//	anim.SetBool ("Ground", isGrounded);
 	//	anim.SetFloat ("vSpeed", rb.velocity.y);

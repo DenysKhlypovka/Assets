@@ -36,7 +36,7 @@ public class EnemyController : MonoBehaviour {
 	private bool isAllowedToShoot = true;
 	private bool animationDelayBool = true;
 	private bool isTriggerRefreshed = true;
-	private bool isInFrontOfWall = false;
+	private bool isImpassable = false;
 	private bool isGoingToPlayer = false;
 
 
@@ -146,11 +146,11 @@ public class EnemyController : MonoBehaviour {
 			Move ();
 		}
 
-		if ((Mathf.Round(posX) == Mathf.Round(leftPosPatrol) && !isFacingRight) || isInFrontOfWall){
+		if ((Mathf.Round(posX) == Mathf.Round(leftPosPatrol) && !isFacingRight) || isImpassable){
 			Idle ();
 		}
 
-		if ((Mathf.Round(posX) == Mathf.Round(rightPosPatrol) && isFacingRight) || isInFrontOfWall)
+		if ((Mathf.Round(posX) == Mathf.Round(rightPosPatrol) && isFacingRight) || isImpassable)
 		{
 			Idle ();
 		}
@@ -180,7 +180,7 @@ public class EnemyController : MonoBehaviour {
 
 	IEnumerator Idling()
 	{
-		isInFrontOfWall = false;
+		isImpassable = false;
 		isIdle = true;
 		yield return new WaitForSecondsRealtime(idleTime); 
 		isIdle = false;
@@ -206,9 +206,9 @@ public class EnemyController : MonoBehaviour {
 		isPlayerDetected = isDetected;
 	}
 
-	public void SetInFrontOfWall(bool _isInFrontOfWall)
+	public void SetImpassable(bool _isImpassable)
 	{
-		isInFrontOfWall = _isInFrontOfWall;
+		isImpassable = _isImpassable;
 	}
 
 	public void Shoot(){
