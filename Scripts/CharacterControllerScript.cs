@@ -59,6 +59,8 @@ public class CharacterControllerScript : MonoBehaviour
 	{
 		if (!IsInputEnabled || isDead)
 			return;
+
+
 	//	isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
 	//	anim.SetBool ("Ground", isGrounded);
 	//	anim.SetFloat ("vSpeed", rb.velocity.y);
@@ -68,10 +70,10 @@ public class CharacterControllerScript : MonoBehaviour
 
 		float move = Input.GetAxisRaw("Horizontal");
 
-		if(move > 0 && !isFacingRight)		//FLIP ANIM
-			Flip();
-		else if (move < 0 && isFacingRight)
-			Flip();
+		if ((move > 0 && !isFacingRight) || (move < 0 && isFacingRight))
+			anim.SetBool("Backwards", true);
+		else  
+			anim.SetBool("Backwards", false);
 
 		anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 		rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
