@@ -6,6 +6,7 @@ public class Raycast : MonoBehaviour {
 
 	CharacterControllerScript playerScript;
 	EnemyController carrierScript;
+	EnemyAI aiScript;
 
 	public float playerRaycastDistance = 6;
 	public float wallRaycastDistance = 3;
@@ -13,6 +14,7 @@ public class Raycast : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		aiScript = this.transform.parent.gameObject.GetComponent<EnemyAI> ();
 		carrierScript = this.transform.parent.gameObject.GetComponent<EnemyController> ();
 		playerScript = GameObject.Find ("player").GetComponent<CharacterControllerScript>();
 	}
@@ -46,12 +48,12 @@ public class Raycast : MonoBehaviour {
 			Debug.DrawRay (transform.position, forward, Color.green);
 			RaycastHit2D hit = Physics2D.Raycast (transform.position, forward, playerRaycastDistance, layerMaskPlayer);
 			if (hit && playerScript.IsVisible()) {
-				carrierScript.PlayerDetected(true);
+				aiScript.PlayerDetected(true);
 				//distance = hit.distance;
 				//Debug.Log (i + ") " + distance + " " + hit.collider.gameObject.name);
 			}
 			else
-				carrierScript.PlayerDetected(false);
+				aiScript.PlayerDetected(false);
 			}
 		}
 	}

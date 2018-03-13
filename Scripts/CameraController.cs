@@ -19,6 +19,6 @@ public class CameraController : MonoBehaviour {
 		offset = pos - player.transform.position;
 
 		pos = player.transform.position + offset;
-		Debug.Log (pos.x);
+		//Debug.Log (pos.x);
 	}
 }
