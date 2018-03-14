@@ -114,6 +114,40 @@ public class CharacterControllerScript : MonoBehaviour
 		//	anim.SetBool("Closet", true);	
 	}
 
+	public void ChangeFloor(float stairsPosX, float secondStairsY){
+		
+		if (!(Input.GetKeyDown (KeyCode.E) && IsInputEnabled))
+			return;
+
+		Vector3 translationFitStairs = new Vector3 ();
+
+		float playerPosX = this.gameObject.transform.position.x;
+		float playerPosY = this.gameObject.transform.position.y;
+
+		float posDelta = playerPosX - stairsPosX;
+		float posDeltaY = -playerPosY + secondStairsY - 0.25f;
+		Debug.Log ($"posY: {playerPosY}; stairsY: {secondStairsY}; delta: {posDeltaY}");
+		translationFitStairs.x = -posDelta;  
+
+		this.transform.Translate(translationFitStairs);
+
+		StartCoroutine(InputDisable());
+
+		StartCoroutine(ChangingFloor(posDeltaY));
+	}
+
+	IEnumerator ChangingFloor(float stairsY)
+	{
+		Vector3 translationHide = new Vector3(0, 0, 30f);
+		Vector3 translationShow = new Vector3(0, stairsY, -30f);
+
+		this.transform.Translate (translationHide);
+		Debug.Log ("start " + transform.position.z);
+		yield return new WaitForSecondsRealtime(DURATION); 
+		this.transform.Translate (translationShow);
+		Debug.Log ("end");
+	}
+
 	public void Hide(bool cover, float hidePosX)
 	{
 
@@ -139,7 +173,7 @@ public class CharacterControllerScript : MonoBehaviour
 		hands.SetActive (false);
 
 
-		StartCoroutine(HideDelay());
+		StartCoroutine(InputDisable());
 
 	//	anim.SetBool(coverType, true);		
 
@@ -150,7 +184,7 @@ public class CharacterControllerScript : MonoBehaviour
 		return visible;
 	}
 
-	IEnumerator HideDelay()
+	IEnumerator InputDisable()
 	{
 		IsInputEnabled = false;
 		rb.velocity = new Vector2(0, -20);
@@ -227,5 +261,9 @@ public class CharacterControllerScript : MonoBehaviour
 		yield return new WaitForSecondsRealtime(deathAnimDuration - 0.1f); 
 		Destroy (gameObject);
 
+	}
+	public bool IsDead()
+	{
+		return isDead;
 	}
 }

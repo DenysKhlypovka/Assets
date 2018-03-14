@@ -2,9 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void Action();
+public class FSM {
+	
+	Action action;
+
+	public void SetState(Action _action)
+	{
+		action = _action;
+	}
+
+	public void Act()
+	{
+		action ();
+	}
+}
+
+
 public class EnemyAI : MonoBehaviour {
 
-	private float shootAnimDuration; 
+	private FSM fsm;
 
 	private Animator anim;
 	private Rigidbody2D rb;
@@ -16,6 +33,7 @@ public class EnemyAI : MonoBehaviour {
 	private float leftPosPatrol;
 	private float rightPosPatrol;
 	private float playerPursueTimer = 0;
+	private float shootAnimDuration; 
 
 	public float bulletForceDiv;
 	public float maxSpeed = 4f; 
@@ -32,6 +50,9 @@ public class EnemyAI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		fsm = new FSM ();
+		fsm.SetState (Patrol);
 
 		anim = GetComponent<Animator>();
 
@@ -55,29 +76,16 @@ public class EnemyAI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (controller.IsDead ())
+		if (controller.IsDead () || isIdle)
 			return;
-		
-		if (playerPursueTimer > -1)
-        	playerPursueTimer -= Time.deltaTime;
-		
 
-        if (isGoingToPlayer)
-        {
-            GoToPlayer();
-            return;
-        }
-
-
-        if (isIdle && !isPlayerDetected)
-            return;
-
-        if (!isPlayerDetected && playerPursueTimer <= 0)
-            Patrol();
-        if (!isPlayerDetected && playerPursueTimer > 0)
-            Pursue();
-        if (isPlayerDetected)
-            Attack();
+		fsm.Act ();
+     //   if (!isPlayerDetected && playerPursueTimer <= 0)
+	//		fsm.SetState (Patrol);
+    //    if (!isPlayerDetected && playerPursueTimer > 0)
+	//		fsm.SetState (Pursue);
+    //    if (isPlayerDetected)
+	//		fsm.SetState (Attack);
     }
 
 	private void Reset()
@@ -92,8 +100,14 @@ public class EnemyAI : MonoBehaviour {
 
     private void GoToPlayer()
     {
-        if (isPlayerDetected || !playerScript.IsVisible())
-            isGoingToPlayer = false;
+		if (isPlayerDetected) {
+			isGoingToPlayer = false;
+			fsm.SetState (Attack);
+		}
+		if (!playerScript.IsVisible ()) {
+			isGoingToPlayer = false;
+			fsm.SetState (Patrol);
+		}
 
         float playerPosX = playerScript.gameObject.transform.position.x;
         float posX = this.gameObject.transform.position.x;
@@ -109,6 +123,14 @@ public class EnemyAI : MonoBehaviour {
     private void Patrol()
     {
 
+		if (isPlayerDetected)
+			fsm.SetState (Attack);
+		if (isGoingToPlayer)
+		{
+			fsm.SetState (GoToPlayer);
+			return;
+		}
+
         //Debug.Log (isInFrontOfWall);
 
         float posX = transform.position.x;
@@ -117,58 +139,77 @@ public class EnemyAI : MonoBehaviour {
 
 		if (posX < rightPosPatrol && controller.IsFacingRight())
         {
-            Move();
+			Move();
         }
+
+		if (posX > leftPosPatrol && !controller.IsFacingRight())
+		{
+			Move();
+		}
 
 		if (posX < leftPosPatrol && posX < rightPosPatrol && !controller.IsFacingRight())
 		{
-            Idle();
+			Idle();
         }
 
 		if (posX > rightPosPatrol && posX > leftPosPatrol && controller.IsFacingRight())
 		{
-            Idle();
+			Idle();
         }
 
-		if (posX > leftPosPatrol && !controller.IsFacingRight())
-        {
-            Move();
-        }
 
 		if ((Mathf.Round(posX) == Mathf.Round(leftPosPatrol) && !controller.IsFacingRight()) || controller.GetImpassable())
 		{
 			Debug.Log (controller.GetImpassable());
-            Idle();
+			Idle();
         }
 
 		if ((Mathf.Round(posX) == Mathf.Round(rightPosPatrol) && controller.IsFacingRight()) || controller.GetImpassable())
 		{
-            Idle();
+			Idle();
         }
 
     }
 
 
     private void Attack()
-    {
+	{
+		if (playerScript.IsDead () || !isPlayerDetected) {
+			fsm.SetState (Patrol);
+			Debug.Log ("zdarowa 1");
+		}
+
+		if (!playerScript.IsDead () && !isPlayerDetected) {
+			fsm.SetState (Pursue);
+			Debug.Log ("zdarowa 2");
+		}
+		
         rb.velocity = new Vector2(0, 0);
         Shoot();
     }
 
     private void Pursue()
     {
+		if (isPlayerDetected)
+			fsm.SetState (Attack);
+		if (!isPlayerDetected && playerPursueTimer <= 0)
+			fsm.SetState (Patrol);
+
+		if (playerPursueTimer > -1)
+			playerPursueTimer -= Time.deltaTime;
+
         //	Debug.Log (playerPursueTimer);
         isAllowedToShoot = true;
         animationDelayBool = true;
         isTriggerRefreshed = true;
-        Move();
+		GoToPlayer ();
 
     }
 
     private void Idle()
 	{
-		Debug.Log($"Current: {this.transform.position.x}, lpp: {leftPosPatrol}, rpp: {rightPosPatrol}");
-        StartCoroutine(Idling());
+		if (!isIdle)
+        	StartCoroutine(Idling());
     }
 
     IEnumerator Idling()

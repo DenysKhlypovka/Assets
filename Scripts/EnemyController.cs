@@ -50,7 +50,7 @@ public class EnemyController : MonoBehaviour {
 	void Update () {
 
 	//	Debug.Log ($"isdetected: {isPlayerDetected}; isidle: {isIdle}; ppt: {playerPursueTimer}");
-
+	//	Debug.Log (transform.position.y);
 		if (isDead)
 			return;
 		
@@ -117,7 +117,7 @@ public class EnemyController : MonoBehaviour {
 	IEnumerator Dying()
 	{
 		yield return new WaitForSecondsRealtime(deathAnimDuration - 0.2f); 
-		Destroy (gameObject);
+	//	Destroy (gameObject);
 
 	}
 
