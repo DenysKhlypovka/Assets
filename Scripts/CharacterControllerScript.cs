@@ -119,7 +119,7 @@ public class CharacterControllerScript : MonoBehaviour
 
 		
 		if (Input.GetKeyDown (KeyCode.E) && IsInputEnabled)
-			stairsScript.ChangeFloor(this.gameObject, DURATION);
+			stairsScript.ChangeFloor(this.gameObject);
 
 
 	}

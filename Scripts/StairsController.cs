@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StairsController : MonoBehaviour {
+	
+	public const float DURATION = 1; 
 
 	public GameObject SecondStairs;
+
+	private float targetX;
 
 	// Use this for initialization
 	void Start () {
@@ -16,21 +20,25 @@ public class StairsController : MonoBehaviour {
 		
 	}
 
+	public float GetSecondStairsY()
+	{
+		return SecondStairs.transform.position.y;
+	}
+
 
 	void OnTriggerStay2D(Collider2D other)
 	{
 		CharacterControllerScript player = other.GetComponent<CharacterControllerScript> ();
 		EnemyController enemyController = other.GetComponent<EnemyController> ();
-		EnemyController enemyAI = other.GetComponent<EnemyAIv2> ();
-		if (player == null)
+		EnemyAIv2 enemyAI = other.GetComponent<EnemyAIv2> ();
+		if (player != null)
 			player.ChangeFloor (this);
-		else if (enemyAI == null)
+		else if (enemyAI != null)
 			enemyAI.ChangeFloor (this);
-	//	playerScript.ChangeFloor (this.gameObject.transform.position.x, SecondStairs.transform.position.y);
 
 	}
-	//public void ChangeFloor(float stairsPosX, float secondStairsY){
-	public void ChangeFloor(GameObject target, int DURATION)
+
+	public void ChangeFloor(GameObject target)
 	{
 		Vector3 translationFitStairs = new Vector3 ();
 
@@ -43,21 +51,22 @@ public class StairsController : MonoBehaviour {
 		translationFitStairs.x = -posDelta;  
 
 		target.transform.Translate(translationFitStairs);
-
-		target.GetComponent<CharacterControllerScript> ().DisableInput ();
+		targetX = target.transform.position.x;
+		if (target.GetComponent<CharacterControllerScript>() != null)
+			target.GetComponent<CharacterControllerScript> ().DisableInput ();
 
 		StartCoroutine(ChangingFloor(target, posDeltaY, DURATION));
 	}
 
-	IEnumerator ChangingFloor(GameObject target, float stairsY, int DURATION)
+	IEnumerator ChangingFloor(GameObject target, float stairsY, float DURATION)
 	{
 		Vector3 translationHide = new Vector3(0, 0, 30f);
-		Vector3 translationShow = new Vector3(0, stairsY, -30f);
-
 		target.transform.Translate (translationHide);
-		Debug.Log ("start " + transform.position.z);
+
 		yield return new WaitForSecondsRealtime(DURATION); 
+		Vector3 translationShow = new Vector3(targetX - target.transform.position.x, stairsY, -30f);
 		target.transform.Translate (translationShow);
-		Debug.Log ("end");
+		if (target.GetComponent<EnemyAIv2> () != null)
+			target.GetComponent<EnemyAIv2> ().SetChangingFloor (false);
 	}
 }
