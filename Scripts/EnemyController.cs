@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour {
 	private CircleCollider2D colliderHead;
 	private CharacterControllerScript playerScript;
 	private EnemyAI aiScript;
+	private EnemyAIv2 aIScript;
 
 
 	public int maxHealth = 3;
@@ -38,6 +39,7 @@ public class EnemyController : MonoBehaviour {
 		colliderBody = GetComponent<CapsuleCollider2D>();
 		colliderHead = GetComponent<CircleCollider2D>();
 		aiScript = GetComponent<EnemyAI>();
+		aIScript = GetComponent<EnemyAIv2>();
 
 		for (int i = 0; i < 4; i++) {
 			AnimationClip clip = anim.runtimeAnimatorController.animationClips [i];
@@ -106,6 +108,7 @@ public class EnemyController : MonoBehaviour {
 			return;
 		rb.velocity = new Vector2(0, -20);
 		isDead = true;
+		Destroy (aIScript);
 		Destroy (ray);
 		Destroy (colliderBody);
 		Destroy (colliderHead);

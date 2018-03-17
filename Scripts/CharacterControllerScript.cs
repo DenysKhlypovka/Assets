@@ -4,8 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class CharacterControllerScript : MonoBehaviour
 {
-	private float deathAnimDuration; 
 	private const int DURATION = 1; 
+
+	private float deathAnimDuration; 
+
 	private static bool IsInputEnabled = true;
 	private Vector3 translation = new Vector3(0, 0, 2f);
 	private Vector3 translationUnhide = new Vector3(0, 0, -2f);
@@ -22,6 +24,7 @@ public class CharacterControllerScript : MonoBehaviour
 
 //	private float groundRadius = 0.2f;
 	public float maxSpeed = 5f; 
+	public float yVelocity = 1f;
 	public int maxHealth = 5;
 	public int maxBullets = 8;
 
@@ -60,7 +63,6 @@ public class CharacterControllerScript : MonoBehaviour
 		if (!IsInputEnabled || isDead)
 			return;
 
-
 	//	isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
 	//	anim.SetBool ("Ground", isGrounded);
 	//	anim.SetFloat ("vSpeed", rb.velocity.y);
@@ -76,7 +78,7 @@ public class CharacterControllerScript : MonoBehaviour
 			anim.SetBool("Backwards", false);
 
 		anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-		rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
+		rb.velocity = new Vector2(move * maxSpeed, -yVelocity);
 
 
 	//	if (visible && isGrounded && Input.GetKeyDown (KeyCode.Space)) //JUMP
@@ -113,40 +115,20 @@ public class CharacterControllerScript : MonoBehaviour
 		//	anim.SetBool("Table", true);		
 		//	anim.SetBool("Closet", true);	
 	}
+	public void ChangeFloor(StairsController stairsScript){
 
-	public void ChangeFloor(float stairsPosX, float secondStairsY){
 		
-		if (!(Input.GetKeyDown (KeyCode.E) && IsInputEnabled))
-			return;
+		if (Input.GetKeyDown (KeyCode.E) && IsInputEnabled)
+			stairsScript.ChangeFloor(this.gameObject, DURATION);
 
-		Vector3 translationFitStairs = new Vector3 ();
 
-		float playerPosX = this.gameObject.transform.position.x;
-		float playerPosY = this.gameObject.transform.position.y;
-
-		float posDelta = playerPosX - stairsPosX;
-		float posDeltaY = -playerPosY + secondStairsY - 0.25f;
-		Debug.Log ($"posY: {playerPosY}; stairsY: {secondStairsY}; delta: {posDeltaY}");
-		translationFitStairs.x = -posDelta;  
-
-		this.transform.Translate(translationFitStairs);
-
-		StartCoroutine(InputDisable());
-
-		StartCoroutine(ChangingFloor(posDeltaY));
 	}
 
-	IEnumerator ChangingFloor(float stairsY)
+	public void DisableInput()
 	{
-		Vector3 translationHide = new Vector3(0, 0, 30f);
-		Vector3 translationShow = new Vector3(0, stairsY, -30f);
-
-		this.transform.Translate (translationHide);
-		Debug.Log ("start " + transform.position.z);
-		yield return new WaitForSecondsRealtime(DURATION); 
-		this.transform.Translate (translationShow);
-		Debug.Log ("end");
+		StartCoroutine(InputDisable());
 	}
+
 
 	public void Hide(bool cover, float hidePosX)
 	{

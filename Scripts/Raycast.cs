@@ -6,7 +6,7 @@ public class Raycast : MonoBehaviour {
 
 	CharacterControllerScript playerScript;
 	EnemyController carrierScript;
-	EnemyAI aiScript;
+	EnemyAIv2 aiScript;
 
 	public float playerRaycastDistance = 6;
 	public float wallRaycastDistance = 3;
@@ -14,9 +14,11 @@ public class Raycast : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		aiScript = this.transform.parent.gameObject.GetComponent<EnemyAI> ();
+		
+		aiScript = this.transform.parent.gameObject.GetComponent<EnemyAIv2> ();
 		carrierScript = this.transform.parent.gameObject.GetComponent<EnemyController> ();
 		playerScript = GameObject.Find ("player").GetComponent<CharacterControllerScript>();
+
 	}
 	
 	// Update is called once per frame
