@@ -60,6 +60,7 @@ public class CharacterControllerScript : MonoBehaviour
 
 	private void Update()
 	{
+		//Debug.Log ("Char: " + Mathf.Round(transform.position.y));
 		if (!IsInputEnabled || isDead)
 			return;
 

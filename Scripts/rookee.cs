@@ -11,6 +11,7 @@ public class rookee : MonoBehaviour {
 	private Transform my;
 	private Rigidbody2D body;
 	private CharacterControllerScript playerScript;
+	private LevelControllerDemo levelController;
 
 	private GameObject bulletEmitter;
 	public GameObject bullet;
@@ -32,7 +33,8 @@ public class rookee : MonoBehaviour {
 		my = GetComponent <Transform> ();
 		body = GetComponent <Rigidbody2D> ();
 
-		playerScript = GameObject.Find ("player").GetComponent<CharacterControllerScript>();
+		playerScript = GameObject.FindWithTag ("Player").GetComponent<CharacterControllerScript>();
+		levelController = GameObject.FindWithTag ("LevelControllerDemo").GetComponent<LevelControllerDemo>();
 
 		bulletEmitter = this.gameObject.transform.GetChild(0).gameObject;
 	}
@@ -79,6 +81,8 @@ public class rookee : MonoBehaviour {
 				StartCoroutine(Reloading());
 				return;
 			}
+
+			levelController.triggerEnemies (transform.position.x, transform.position.y);
 
 			Vector2 playerVelocity = playerScript.gameObject.GetComponent<Rigidbody2D> ().velocity;
 		//	float newAngleRad = (angle * Mathf.PI) / 180;

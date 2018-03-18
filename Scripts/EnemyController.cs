@@ -30,7 +30,7 @@ public class EnemyController : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		playerScript = GameObject.Find ("player").GetComponent<CharacterControllerScript>();
+		playerScript = GameObject.FindWithTag ("Player").GetComponent<CharacterControllerScript>();
 
 		currentHealth = maxHealth;
 		ray = this.gameObject.transform.GetChild(0).gameObject;

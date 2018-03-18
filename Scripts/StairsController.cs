@@ -17,7 +17,8 @@ public class StairsController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+	//	Debug.Log ("Sters: " + Mathf.Round(transform.position.y));
 	}
 
 	public float GetSecondStairsY()
