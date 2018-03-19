@@ -16,7 +16,9 @@ public class LevelControllerDemo : MonoBehaviour {
 
 	public void triggerEnemies(float originX, float originY){
 		GameObject[] enemies = GameObject.FindGameObjectsWithTag ("enemy");
+
 		foreach (GameObject enemy in enemies)
-			enemy.GetComponent<EnemyAIv2>().Trigger (originX, originY);
+			if (enemy.GetComponent<EnemyAIv2>() != null)
+				enemy.GetComponent<EnemyAIv2>().Trigger (originX, originY);
 	}
 }

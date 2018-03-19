@@ -43,10 +43,10 @@ public class EnemyAI : MonoBehaviour {
 
 	private bool isAllowedToShoot = true;
 	private bool animationDelayBool = true;
+	private bool isTriggerRefreshed = true;
 	private bool isGoingToPlayer = false;
 	private bool isIdle = false;
 	private bool isPlayerDetected = false;
-	private bool isTriggerRefreshed = true;
 
 	// Use this for initialization
 	void Start () {

@@ -38,7 +38,7 @@ public class EnemyController : MonoBehaviour {
 		rb = GetComponent<Rigidbody2D>();
 		colliderBody = GetComponent<CapsuleCollider2D>();
 		colliderHead = GetComponent<CircleCollider2D>();
-		aiScript = GetComponent<EnemyAI>();
+	//	aiScript = GetComponent<EnemyAI>();
 		aIScript = GetComponent<EnemyAIv2>();
 
 		for (int i = 0; i < 4; i++) {
@@ -91,13 +91,12 @@ public class EnemyController : MonoBehaviour {
 			currentHealth -= damageToBody;
 
 		CheckIfDead(area);
-		aiScript.DamagedByPlayer ();
 	}
 
 
 	private void CheckIfDead(string latestHitArea)
 	{
-		Debug.Log (latestHitArea);
+		
 		if (currentHealth <= 0)
 			Kill ();
 	}
