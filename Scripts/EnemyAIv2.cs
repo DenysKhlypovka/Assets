@@ -104,17 +104,17 @@ public class EnemyAIv2 : MonoBehaviour {
 		float x = transform.position.x;
 		Debug.Log ("Patrol");
 
-		if (isPlayerDetected)
+		if (isPlayerDetected) {
 			fsm.SetState (Attack);
-
-		if (Mathf.Round (x) == Mathf.Round (rightPosPatrol) && isFacingRight) {
-			fsm.SetState (Idle);
-		//	Debug.Log ($"X: {Mathf.Round (x)}; RPP: {Mathf.Round (rightPosPatrol)}");
+			return;
 		}
 
-		if (Mathf.Round (x) == Mathf.Round (leftPosPatrol) && !isFacingRight) {
+		if (controller.GetImpassable() || 
+			(Mathf.Round (x) == Mathf.Round (rightPosPatrol) && isFacingRight) ||
+			(Mathf.Round (x) == Mathf.Round (leftPosPatrol) && !isFacingRight)) {
 			fsm.SetState (Idle);
-		//	Debug.Log ($"X: {Mathf.Round (x)}; RPP: {Mathf.Round (leftPosPatrol)}");
+			return;
+		//	Debug.Log ($"X: {Mathf.Round (x)}; RPP: {Mathf.Round (rightPosPatrol)}");
 		}
 
 		if (x > leftPosPatrol && !isChangingFloor)
@@ -142,8 +142,10 @@ public class EnemyAIv2 : MonoBehaviour {
 	{
 		Debug.Log ("MoveTo");
 
-		if (isPlayerDetected)
+		if (isPlayerDetected) {
 			fsm.SetState (Attack);
+			return;
+		}
 		
 		if ((Mathf.Round (transform.position.x) == Mathf.Round (targetX)) &&
 			(Mathf.Round (transform.position.y) == Mathf.Round (targetY))) {
@@ -220,7 +222,13 @@ public class EnemyAIv2 : MonoBehaviour {
 	}
 
 	private void Idle(){
-		
+
+		if (isPlayerDetected) {
+			isIdle = false;
+			fsm.SetState (Attack);
+			return;
+		}
+
 		if (!isIdle) {
 			rb.velocity = new Vector2(0, GetComponent<Rigidbody2D>().velocity.y);
 			StartCoroutine (Idling ());
@@ -238,7 +246,8 @@ public class EnemyAIv2 : MonoBehaviour {
 		if (behList.ToString () == "Patrol") {
 		
 			controller.Flip ();
-			isToChangeFloor = true;
+//			isToChangeFloor = true;
+//			patrolling with changing the floor
 
 			fsm.SetState (Patrol);
 
@@ -254,12 +263,18 @@ public class EnemyAIv2 : MonoBehaviour {
 	private void Attack()
 	{
 		Debug.Log ("Attack");
-		if (playerScript.IsDead () || !isPlayerDetected) {
-			fsm.SetState (Patrol);
-		}
+		if (!isPlayerDetected) {
+			if (playerScript.IsDead ()) {
+				fsm.SetState (Patrol);
+			}
+			else 
+				fsm.SetState (Pursue);
 
-		if (!playerScript.IsDead () && !isPlayerDetected) {
-			fsm.SetState (Pursue);
+			animationDelayBool = false;
+			isTriggerRefreshed = true;
+			isAllowedToShoot = true;
+
+			return;
 		}
 
 		rb.velocity = new Vector2(0, 0);
@@ -272,9 +287,14 @@ public class EnemyAIv2 : MonoBehaviour {
 		if (!isPursuing)
 			StartCoroutine (Pursuing());
 
+		if (Mathf.Round (playerScript.transform.position.y) != Mathf.Round (transform.position.y))
+			Trigger (playerScript.transform.position.x, playerScript.transform.position.y);
+
 		if (isPlayerDetected) {
 			isPursuing = false;
+			StopCoroutine (Pursuing());
 			fsm.SetState (Attack);
+			return;
 		}
 
 		Move ();
@@ -287,21 +307,24 @@ public class EnemyAIv2 : MonoBehaviour {
 		yield return new WaitForSecondsRealtime(maxPursueTime);
 		isPursuing = false;
 
-		fsm.SetState (Patrol);
+		if (!isPlayerDetected)
+			fsm.SetState (Patrol);
 	}
 
 
 	public void Shoot()
 	{
 
-		if (!isAllowedToShoot)
+		if (!isAllowedToShoot) {
 			return;
+
+		}
 
 		if (isTriggerRefreshed)
 		{
 			anim.SetTrigger("Shoot");
 			isTriggerRefreshed = false;
-			StartCoroutine(ShootAnimationDelay());
+			StartCoroutine(ShotAnimationDelay());
 		}
 
 		if (!animationDelayBool)
@@ -336,7 +359,7 @@ public class EnemyAIv2 : MonoBehaviour {
 		StartCoroutine(TimeBetweenShots());
 	}
 
-	IEnumerator ShootAnimationDelay()
+	IEnumerator ShotAnimationDelay()
 	{
 		animationDelayBool = false;
 		yield return new WaitForSecondsRealtime(shootAnimDuration / 2);

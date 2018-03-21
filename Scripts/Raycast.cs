@@ -31,7 +31,6 @@ public class Raycast : MonoBehaviour {
 		Vector2 forward = transform.TransformDirection (Vector2.right) * wallRaycastDistance; 
 		RaycastHit2D hitWall = Physics2D.Raycast (transform.position, forward, wallRaycastDistance, layerMaskWall);
 
-
 		Vector2 down = transform.TransformDirection (new Vector2(1, -1)) * groundRaycastDistance;
 		RaycastHit2D hitGround = Physics2D.Raycast (transform.position, down, groundRaycastDistance, layerMaskWall);
 
@@ -48,6 +47,7 @@ public class Raycast : MonoBehaviour {
 		for (int i = -1; i < 2; i++) {
 			forward.y = i;
 			Debug.DrawRay (transform.position, forward, Color.green);
+			forward = transform.TransformDirection (Vector2.right) * playerRaycastDistance; 
 			RaycastHit2D hit = Physics2D.Raycast (transform.position, forward, playerRaycastDistance, layerMaskPlayer);
 			if (hit && playerScript.IsVisible()) {
 				aiScript.PlayerDetected(true);
