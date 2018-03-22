@@ -270,6 +270,8 @@ public class EnemyAIv2 : MonoBehaviour {
 			else 
 				fsm.SetState (Pursue);
 
+			StopAllCoroutines ();
+
 			animationDelayBool = false;
 			isTriggerRefreshed = true;
 			isAllowedToShoot = true;
@@ -345,6 +347,7 @@ public class EnemyAIv2 : MonoBehaviour {
 		//Sometimes bullets may appear rotated incorrectly due to the way its pivot was set from the original modeling package.
 		//This is EASILY corrected here, you might have to rotate it from a different axis and or angle based on your particular mesh.
 		Temporary_Bullet_Handler.transform.Rotate(Vector2.right);
+		Temporary_Bullet_Handler.GetComponent<BulletController>().SetShotByEnemy(true);
 
 		//Retrieve the Rigidbody component from the instantiated Bullet and control it.
 		Rigidbody2D Temporary_RigidBody;
