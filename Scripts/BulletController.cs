@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour {
 
+	private bool isShotByEnemy;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -14,14 +16,23 @@ public class BulletController : MonoBehaviour {
 		
 	}
 
+	public void SetShotByEnemy(bool _isByEnemy)
+	{
+		isShotByEnemy = true;
+	}
+
 	void OnTriggerEnter2D(Collider2D coll)
 	{
+		if (coll.tag == "enemy" && isShotByEnemy) {
+			return;
+		}
 		if (coll.tag == "Player") {
 			coll.gameObject.GetComponent<CharacterControllerScript> ().ApplyDamage ();
 			Destroy(this.gameObject);
 		}
 
 		if (coll.tag == "enemy") {
+			Debug.LogWarning ("zdarowa");
 			string areaOfApplication = "unknown";
 
 			if (coll.GetType () == typeof(CapsuleCollider2D))

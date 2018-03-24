@@ -4,8 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class CharacterControllerScript : MonoBehaviour
 {
-	private float deathAnimDuration; 
 	private const int DURATION = 1; 
+
+	private float deathAnimDuration; 
+
 	private static bool IsInputEnabled = true;
 	private Vector3 translation = new Vector3(0, 0, 2f);
 	private Vector3 translationUnhide = new Vector3(0, 0, -2f);
@@ -22,6 +24,7 @@ public class CharacterControllerScript : MonoBehaviour
 
 //	private float groundRadius = 0.2f;
 	public float maxSpeed = 5f; 
+	public float yVelocity = 1f;
 	public int maxHealth = 5;
 	public int maxBullets = 8;
 
@@ -57,9 +60,9 @@ public class CharacterControllerScript : MonoBehaviour
 
 	private void Update()
 	{
+		//Debug.Log ("Char: " + Mathf.Round(transform.position.y));
 		if (!IsInputEnabled || isDead)
 			return;
-
 
 	//	isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround); 
 	//	anim.SetBool ("Ground", isGrounded);
@@ -76,7 +79,7 @@ public class CharacterControllerScript : MonoBehaviour
 			anim.SetBool("Backwards", false);
 
 		anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-		rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
+		rb.velocity = new Vector2(move * maxSpeed, -yVelocity);
 
 
 	//	if (visible && isGrounded && Input.GetKeyDown (KeyCode.Space)) //JUMP
@@ -113,6 +116,20 @@ public class CharacterControllerScript : MonoBehaviour
 		//	anim.SetBool("Table", true);		
 		//	anim.SetBool("Closet", true);	
 	}
+	public void ChangeFloor(StairsController stairsScript){
+
+		
+		if (Input.GetKeyDown (KeyCode.E) && IsInputEnabled)
+			stairsScript.ChangeFloor(this.gameObject);
+
+
+	}
+
+	public void DisableInput()
+	{
+		StartCoroutine(InputDisable());
+	}
+
 
 	public void Hide(bool cover, float hidePosX)
 	{
@@ -139,7 +156,7 @@ public class CharacterControllerScript : MonoBehaviour
 		hands.SetActive (false);
 
 
-		StartCoroutine(HideDelay());
+		StartCoroutine(InputDisable());
 
 	//	anim.SetBool(coverType, true);		
 
@@ -150,7 +167,7 @@ public class CharacterControllerScript : MonoBehaviour
 		return visible;
 	}
 
-	IEnumerator HideDelay()
+	IEnumerator InputDisable()
 	{
 		IsInputEnabled = false;
 		rb.velocity = new Vector2(0, -20);
@@ -227,5 +244,9 @@ public class CharacterControllerScript : MonoBehaviour
 		yield return new WaitForSecondsRealtime(deathAnimDuration - 0.1f); 
 		Destroy (gameObject);
 
+	}
+	public bool IsDead()
+	{
+		return isDead;
 	}
 }
