@@ -22,7 +22,10 @@ public class Fsm {
 public enum behaviourList
 {
 	Patrol,
-	Idle
+	Idle,
+	WatchTV,
+	WatchTVSmoke,
+	Toilet
 };
 
 public class EnemyAIv2 : MonoBehaviour {
@@ -50,6 +53,8 @@ public class EnemyAIv2 : MonoBehaviour {
 	private float stairsX;
 	private float shootAnimDuration; 
 
+	private string animBool = "unknown";
+
 	private bool isAllowedToShoot = true;
 	private bool animationDelayBool = true;
 	private bool isTriggerRefreshed = true;
@@ -68,10 +73,26 @@ public class EnemyAIv2 : MonoBehaviour {
 		controller = gameObject.GetComponent<EnemyController> ();
 		rb = gameObject.GetComponent<Rigidbody2D> ();
 		fsm = new Fsm ();
-		if (behList.ToString () == "Patrol")
+		switch (behList.ToString ()) {
+		case "Patrol":
 			fsm.SetState (Patrol);
-		if (behList.ToString () == "Idle")
+			break;
+		case "Idle":
 			fsm.SetState (Idle);
+			break;
+		case "WatchTV":
+			fsm.SetState (Idle);
+			animBool = "WatchingTV";
+			break;
+		case "WatchTVSmoke":
+			fsm.SetState (Idle);
+			animBool = "WatchingTVSmoking";
+			break;
+		case "Toilet":
+			fsm.SetState (Idle);
+			animBool = "Toilet";
+			break;
+		}
 		
 		for (int i = 0; i < 4; i++) {
 			AnimationClip clip = anim.runtimeAnimatorController.animationClips [i];
@@ -183,6 +204,10 @@ public class EnemyAIv2 : MonoBehaviour {
 		StopAllCoroutines ();
 		isIdle = false;
 
+
+		if (animBool != "unknown")
+			anim.SetBool(animBool, false);
+
 		if (Mathf.Round (targetY) != Mathf.Round (transform.position.y)) {
 
 			GameObject[] stairs = GameObject.FindGameObjectsWithTag ("Stairs");
@@ -223,9 +248,18 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void Idle(){
 
+
 		if (isPlayerDetected) {
 			isIdle = false;
 			fsm.SetState (Attack);
+
+			if (animBool != "unknown")
+				anim.SetBool(animBool, false);
+			return;
+		}
+
+		if (animBool != "unknown") {
+			anim.SetBool (animBool, true);
 			return;
 		}
 

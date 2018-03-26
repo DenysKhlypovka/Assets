@@ -45,6 +45,8 @@ public class CharacterControllerScript : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
 
+		Physics2D.IgnoreCollision (collider, hands.GetComponent<CapsuleCollider2D>(), true);
+
 		anim.SetBool("Visible", true);
 
 
@@ -125,6 +127,17 @@ public class CharacterControllerScript : MonoBehaviour
 
 	}
 
+	public void TurnLampOnOff(LampController lamp){
+		if (Input.GetKeyDown (KeyCode.E) && IsInputEnabled)
+			lamp.TurnOnOff ();
+	}
+
+
+	public void OpenShelf(ShelfController shelf){
+		if (Input.GetKeyDown (KeyCode.E) && IsInputEnabled)
+			shelf.OpenShelf ();
+	}
+
 	public void DisableInput()
 	{
 		StartCoroutine(InputDisable());
@@ -140,7 +153,7 @@ public class CharacterControllerScript : MonoBehaviour
 		float playerPosX = this.gameObject.transform.position.x;
 
 		float posDelta = playerPosX - hidePosX;
-		translation.x = -posDelta; //fit in the closet 
+		translation.x = -posDelta - 0.4f; //fit in the closet 
 
 	//	string coverType = "Table";
 	//	if (!cover)
