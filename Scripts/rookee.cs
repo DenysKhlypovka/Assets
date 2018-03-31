@@ -107,6 +107,7 @@ public class rookee : MonoBehaviour {
 
 			//Tell the bullet to be "pushed" forward by an amount set by Bullet_Forward_Force.
 			Temporary_RigidBody.AddForce(bulletDirection * multip);
+			GetComponent<Animator> ().SetTrigger ("Shoot");
 
 			//Basic Clean Up, set the Bullets to self destruct after 10 Seconds, I am being VERY generous here, normally 3 seconds is plenty.
 			Destroy(Temporary_Bullet_Handler, bulletDestroyDelay);

@@ -52,7 +52,7 @@ public class CharacterControllerScript : MonoBehaviour
 
 		for (int i = 0; i < anim.runtimeAnimatorController.animationClips.Length; i++) {
 			AnimationClip clip = anim.runtimeAnimatorController.animationClips [i];
-			if (clip.name == "PlayerDieWithHands")
+			if (clip.name == "GC-death")
 				deathAnimDuration = clip.length;
 		}
 		//Debug.Log (deathAnimDuration);
@@ -244,17 +244,19 @@ public class CharacterControllerScript : MonoBehaviour
 		if (isDead)
 			return;
 		isDead = true;
+		anim.SetTrigger ("Killed");
+		Debug.Log ("killed");
 		Destroy (hands);
 		Destroy (collider);
 		Destroy (rb);
-		anim.SetTrigger ("Killed");
 		StartCoroutine (Dying());
 	}
 
 	IEnumerator Dying()
 	{
 		rb.velocity = new Vector2(0, -20);
-		yield return new WaitForSecondsRealtime(deathAnimDuration - 0.1f); 
+		yield return new WaitForSecondsRealtime(deathAnimDuration);
+		Debug.Log ("killeddd"); 
 		Destroy (gameObject);
 
 	}

@@ -123,7 +123,7 @@ public class EnemyAIv2 : MonoBehaviour {
 	private void Patrol()
 	{
 		float x = transform.position.x;
-		Debug.Log ("Patrol");
+//		Debug.Log ("Patrol");
 
 		if (isPlayerDetected) {
 			fsm.SetState (Attack);
@@ -161,7 +161,7 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void MoveTo()
 	{
-		Debug.Log ("MoveTo");
+	//	Debug.Log ("MoveTo");
 
 		if (isPlayerDetected) {
 			fsm.SetState (Attack);
@@ -296,7 +296,7 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void Attack()
 	{
-		Debug.Log ("Attack");
+	//	Debug.Log ("Attack");
 		if (!isPlayerDetected) {
 			if (playerScript.IsDead ()) {
 				fsm.SetState (Patrol);
@@ -319,7 +319,7 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void Pursue()
 	{
-		Debug.Log ("Pursue");
+	//	Debug.Log ("Pursue");
 		if (!isPursuing)
 			StartCoroutine (Pursuing());
 
