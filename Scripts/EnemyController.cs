@@ -43,7 +43,7 @@ public class EnemyController : MonoBehaviour {
 
 		for (int i = 0; i < 4; i++) {
 			AnimationClip clip = anim.runtimeAnimatorController.animationClips [i];
-			if (clip.name == "EnemyDie")
+			if (clip.name == "blooddeath")
 				deathAnimDuration = clip.length;
 		}
 	}

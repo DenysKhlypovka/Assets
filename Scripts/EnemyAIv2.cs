@@ -94,10 +94,12 @@ public class EnemyAIv2 : MonoBehaviour {
 			break;
 		}
 		
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < anim.runtimeAnimatorController.animationClips.Length; i++) {
 			AnimationClip clip = anim.runtimeAnimatorController.animationClips [i];
-			if (clip.name == "EnemyShoot")
+			if (clip.name == "enemy-shot") {
 				shootAnimDuration = clip.length;
+			}
+			Debug.Log (clip.name);
 		}
 
 		bulletEmitter = this.gameObject.transform.GetChild(1).gameObject;
@@ -131,8 +133,8 @@ public class EnemyAIv2 : MonoBehaviour {
 		}
 
 		if (controller.GetImpassable() || 
-			(Mathf.Round (x) == Mathf.Round (rightPosPatrol) && isFacingRight) ||
-			(Mathf.Round (x) == Mathf.Round (leftPosPatrol) && !isFacingRight)) {
+			(Mathf.Floor (x) == Mathf.Floor (rightPosPatrol) && isFacingRight) ||
+			(Mathf.Floor (x) == Mathf.Floor (leftPosPatrol) && !isFacingRight)) {
 			fsm.SetState (Idle);
 			return;
 		//	Debug.Log ($"X: {Mathf.Round (x)}; RPP: {Mathf.Round (rightPosPatrol)}");
@@ -168,20 +170,23 @@ public class EnemyAIv2 : MonoBehaviour {
 			return;
 		}
 		
-		if ((Mathf.Round (transform.position.x) == Mathf.Round (targetX)) &&
-			(Mathf.Round (transform.position.y) == Mathf.Round (targetY))) {
+		if ((Mathf.Floor (transform.position.x) == Mathf.Floor (targetX)) &&
+			(Mathf.Floor (transform.position.y) == Mathf.Floor (targetY))) {
 			fsm.SetState (Idle);
 
 			return;
 		}
 
-		if (Mathf.Round (targetY) != Mathf.Round (transform.position.y)) {
+		if (Mathf.Floor (targetY) != Mathf.Floor (transform.position.y)) {
 
-			if (Mathf.Round (transform.position.x) == Mathf.Round (stairsX))
+
+			if (Mathf.Floor (transform.position.x) == Mathf.Floor (stairsX)) {
 				isToChangeFloor = true;
+			}
 			
 
 		} else {
+		//	Debug.Log ($"target X: {targetX}, X: {transform.position.x}, IFR: {controller.IsFacingRight()}");
 			if (targetX > transform.position.x && !controller.IsFacingRight()) {
 				controller.Flip();
 
@@ -208,13 +213,13 @@ public class EnemyAIv2 : MonoBehaviour {
 		if (animBool != "unknown")
 			anim.SetBool(animBool, false);
 
-		if (Mathf.Round (targetY) != Mathf.Round (transform.position.y)) {
+		if (Mathf.Floor (targetY) != Mathf.Floor (transform.position.y)) {
 
 			GameObject[] stairs = GameObject.FindGameObjectsWithTag ("Stairs");
 
 			foreach (GameObject stair in stairs) {
-				if (Mathf.Round (stair.transform.position.y) == Mathf.Round (transform.position.y) &&
-				    Mathf.Round (stair.GetComponent<StairsController> ().GetSecondStairsY ()) == Mathf.Round (targetY)) {
+				if (Mathf.Floor (stair.transform.position.y) == Mathf.Floor (transform.position.y) &&
+					Mathf.Floor (stair.GetComponent<StairsController> ().GetSecondStairsY ()) == Mathf.Floor (targetY)) {
 					stairsX = stair.transform.position.x;
 				}
 			}
@@ -323,7 +328,7 @@ public class EnemyAIv2 : MonoBehaviour {
 		if (!isPursuing)
 			StartCoroutine (Pursuing());
 
-		if (Mathf.Round (playerScript.transform.position.y) != Mathf.Round (transform.position.y))
+		if (Mathf.Floor (playerScript.transform.position.y) != Mathf.Floor (transform.position.y))
 			Trigger (playerScript.transform.position.x, playerScript.transform.position.y);
 
 		if (isPlayerDetected) {

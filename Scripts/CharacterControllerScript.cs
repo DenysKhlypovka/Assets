@@ -245,7 +245,6 @@ public class CharacterControllerScript : MonoBehaviour
 			return;
 		isDead = true;
 		anim.SetTrigger ("Killed");
-		Debug.Log ("killed");
 		Destroy (hands);
 		Destroy (collider);
 		Destroy (rb);
@@ -256,7 +255,6 @@ public class CharacterControllerScript : MonoBehaviour
 	{
 		rb.velocity = new Vector2(0, -20);
 		yield return new WaitForSecondsRealtime(deathAnimDuration);
-		Debug.Log ("killeddd"); 
 		Destroy (gameObject);
 
 	}
