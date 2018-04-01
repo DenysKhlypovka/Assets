@@ -9,6 +9,7 @@ public class Raycast : MonoBehaviour {
 	EnemyAIv2 aiScript;
 
 	public float playerRaycastDistance = 6;
+	public float backRaycastDistance = 1;
 	public float wallRaycastDistance = 3;
 	public float groundRaycastDistance = 3;
 
@@ -36,6 +37,15 @@ public class Raycast : MonoBehaviour {
 
 		Debug.DrawRay (transform.position, down, Color.blue);
 
+		Vector2 behind = transform.TransformDirection (Vector2.left) * backRaycastDistance; 
+		RaycastHit2D hitFromBehind = Physics2D.Raycast (transform.position, behind, backRaycastDistance, layerMaskPlayer);
+
+		if (hitFromBehind) {
+			
+			aiScript.PlayerIsBehind ();
+		}
+
+		Debug.DrawRay (transform.position, behind, Color.red);
 
 		if (hitWall || !hitGround) {
 

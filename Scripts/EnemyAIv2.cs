@@ -43,6 +43,8 @@ public class EnemyAIv2 : MonoBehaviour {
 	public float patrolDistance = 10f;
 	public float idleTime = 2f;
 	public float maxPursueTime = 1f;
+	public float flipDelay = 1f;
+	public float toilettingTime = 2f;
 	public behaviourList behList;
 	public GameObject bullet;
 
@@ -64,6 +66,9 @@ public class EnemyAIv2 : MonoBehaviour {
 	private bool isToChangeFloor = false;
 	private bool isChangingFloor = false;
 	private bool isPursuing = false;
+	private bool isFlipEnabled = true;
+
+	private bool passiveState = false;
 
 	// Use this for initialization
 	void Start () {
@@ -83,14 +88,18 @@ public class EnemyAIv2 : MonoBehaviour {
 		case "WatchTV":
 			fsm.SetState (Idle);
 			animBool = "WatchingTV";
+			passiveState = true;
 			break;
 		case "WatchTVSmoke":
 			fsm.SetState (Idle);
 			animBool = "WatchingTVSmoking";
+			passiveState = true;
 			break;
 		case "Toilet":
 			fsm.SetState (Idle);
 			animBool = "Toilet";
+			passiveState = true;
+			StartCoroutine (Toiletting());
 			break;
 		}
 		
@@ -107,6 +116,24 @@ public class EnemyAIv2 : MonoBehaviour {
 		leftPosPatrol = transform.position.x - patrolDistance / 2;
 		rightPosPatrol = transform.position.x + patrolDistance / 2;
 	}
+
+	IEnumerator Toiletting()
+	{
+		
+		yield return new WaitForSecondsRealtime(idleTime);
+		resetState ();
+	}
+
+	void resetState(){
+
+		passiveState = false;
+		anim.SetBool (animBool, false);
+		isIdle = false;
+		StopCoroutine (Idling());
+		animBool = "Patrol";
+		fsm.SetState (Patrol);
+	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -131,13 +158,15 @@ public class EnemyAIv2 : MonoBehaviour {
 			fsm.SetState (Attack);
 			return;
 		}
-
+	//	Debug.Log ($"X: {Mathf.Floor (x)}; RPP: {Mathf.Floor (rightPosPatrol)}; LPP: {Mathf.Floor (leftPosPatrol)}");
 		if (controller.GetImpassable() || 
 			(Mathf.Floor (x) == Mathf.Floor (rightPosPatrol) && isFacingRight) ||
 			(Mathf.Floor (x) == Mathf.Floor (leftPosPatrol) && !isFacingRight)) {
+
+
 			fsm.SetState (Idle);
 			return;
-		//	Debug.Log ($"X: {Mathf.Round (x)}; RPP: {Mathf.Round (rightPosPatrol)}");
+
 		}
 
 		if (x > leftPosPatrol && !isChangingFloor)
@@ -149,6 +178,8 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void Move()
 	{
+		if (passiveState)
+			resetState ();
 		
 		if (isFacingRight)
 		{
@@ -258,12 +289,12 @@ public class EnemyAIv2 : MonoBehaviour {
 			isIdle = false;
 			fsm.SetState (Attack);
 
-			if (animBool != "unknown")
+			if (passiveState)
 				anim.SetBool(animBool, false);
 			return;
 		}
 
-		if (animBool != "unknown") {
+		if (passiveState) {
 			anim.SetBool (animBool, true);
 			return;
 		}
@@ -282,8 +313,10 @@ public class EnemyAIv2 : MonoBehaviour {
 		yield return new WaitForSecondsRealtime(idleTime);
 		isIdle = false;
 
-		if (behList.ToString () == "Patrol") {
+		if (behList.ToString () == "Patrol" || animBool == "Patrol") {
 		
+			Debug.Log ("+=");
+
 			controller.Flip ();
 //			isToChangeFloor = true;
 //			patrolling with changing the floor
@@ -294,6 +327,22 @@ public class EnemyAIv2 : MonoBehaviour {
 		}
 	}
 
+	public void PlayerIsBehind()
+	{
+		if (isFlipEnabled) {
+			controller.Flip ();
+			return;
+		}
+		StartCoroutine (FlipDelay());
+	}
+
+	IEnumerator FlipDelay()
+	{
+		isFlipEnabled = false;
+		yield return new WaitForSecondsRealtime(flipDelay);
+		isFlipEnabled = true;
+	}
+
 	public void PlayerDetected(bool _detected)
 	{
 		isPlayerDetected = _detected;
@@ -301,6 +350,10 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void Attack()
 	{
+
+		if (passiveState)
+			resetState ();
+
 	//	Debug.Log ("Attack");
 		if (!isPlayerDetected) {
 			if (playerScript.IsDead ()) {

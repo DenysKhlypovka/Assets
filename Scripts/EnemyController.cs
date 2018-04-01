@@ -125,6 +125,7 @@ public class EnemyController : MonoBehaviour {
 
 	public void Flip()
 	{	
+		
 		if (isDead)
 			return;
 		isFacingRight = !isFacingRight;

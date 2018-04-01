@@ -47,7 +47,7 @@ public class StairsController : MonoBehaviour {
 		float targetPosY = target.gameObject.transform.position.y;
 
 		float posDelta = targetPosX - this.gameObject.transform.position.x;
-		float posDeltaY = -targetPosY + SecondStairs.transform.position.y - 0.25f;
+		float posDeltaY = -targetPosY + SecondStairs.transform.position.y - 0.1f;
 		//Debug.Log ($"posY: {targetPosY}; stairsY: {SecondStairs.transform.position.y}; delta: {posDeltaY}");
 		translationFitStairs.x = -posDelta;  
 

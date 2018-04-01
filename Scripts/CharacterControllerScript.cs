@@ -153,7 +153,7 @@ public class CharacterControllerScript : MonoBehaviour
 		float playerPosX = this.gameObject.transform.position.x;
 
 		float posDelta = playerPosX - hidePosX;
-		translation.x = -posDelta - 0.4f; //fit in the closet 
+		translation.x = -posDelta - .9f; //fit in the closet 
 
 	//	string coverType = "Table";
 	//	if (!cover)
@@ -169,7 +169,7 @@ public class CharacterControllerScript : MonoBehaviour
 		hands.SetActive (false);
 
 
-		StartCoroutine(InputDisable());
+		DisableInput ();
 
 	//	anim.SetBool(coverType, true);		
 
