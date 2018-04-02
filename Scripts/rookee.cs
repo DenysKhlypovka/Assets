@@ -82,7 +82,7 @@ public class rookee : MonoBehaviour {
 				return;
 			}
 
-			levelController.triggerEnemies (transform.position.x, transform.position.y);
+			levelController.TriggerEnemies (transform.position.x, transform.position.y);
 
 			Vector2 playerVelocity = playerScript.gameObject.GetComponent<Rigidbody2D> ().velocity;
 		//	float newAngleRad = (angle * Mathf.PI) / 180;

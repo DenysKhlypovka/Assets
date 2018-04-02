@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 30202c50609fa3240aacf6aad2645397
-timeCreated: 1521998247
+timeCreated: 1522683536
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -11,7 +11,6 @@ TextureImporter:
     21300008: enemyidlesofasmoke_4
     21300010: enemyidlesofasmoke_5
     21300012: enemyidlesofasmoke_6
-  externalObjects: {}
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -20,8 +19,6 @@ TextureImporter:
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
-    mipMapsPreserveCoverage: 0
-    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
@@ -37,13 +34,10 @@ TextureImporter:
   textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
-    serializedVersion: 2
     filterMode: 0
     aniso: 16
     mipBias: -1
-    wrapU: -1
-    wrapV: -1
-    wrapW: -1
+    wrapMode: -1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -65,34 +59,28 @@ TextureImporter:
   platformSettings:
   - buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    androidETC2FallbackOverride: 0
   - buildTarget: Standalone
     maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    androidETC2FallbackOverride: 0
   - buildTarget: Android
     maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -100,102 +88,94 @@ TextureImporter:
       name: enemyidlesofasmoke_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 2
-        width: 48
-        height: 60
+        x: 0
+        y: 48
+        width: 45
+        height: 71
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: enemyidlesofasmoke_1
       rect:
         serializedVersion: 2
-        x: 90
-        y: 2
-        width: 48
-        height: 59
+        x: 85
+        y: 51
+        width: 53
+        height: 67
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: enemyidlesofasmoke_2
       rect:
         serializedVersion: 2
-        x: 179
-        y: 2
-        width: 48
-        height: 59
+        x: 175
+        y: 53
+        width: 52
+        height: 65
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: enemyidlesofasmoke_3
       rect:
         serializedVersion: 2
-        x: 272
-        y: 2
-        width: 48
-        height: 59
+        x: 267
+        y: 53
+        width: 53
+        height: 65
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: enemyidlesofasmoke_4
       rect:
         serializedVersion: 2
-        x: 365
-        y: 2
-        width: 48
-        height: 59
+        x: 360
+        y: 51
+        width: 53
+        height: 67
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: enemyidlesofasmoke_5
       rect:
         serializedVersion: 2
-        x: 457
-        y: 2
-        width: 48
-        height: 59
+        x: 452
+        y: 51
+        width: 53
+        height: 67
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: enemyidlesofasmoke_6
       rect:
         serializedVersion: 2
-        x: 544
-        y: 2
-        width: 48
-        height: 59
+        x: 539
+        y: 51
+        width: 53
+        height: 67
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
       tessellationDetail: 0
     outline: []
-    physicsShape: []
   spritePackingTag: 
   userData: 
   assetBundleName: 

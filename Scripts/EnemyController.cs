@@ -46,6 +46,22 @@ public class EnemyController : MonoBehaviour {
 			if (clip.name == "blooddeath")
 				deathAnimDuration = clip.length;
 		}
+
+		IgnoreCollisions ();
+	}
+
+	void IgnoreCollisions()
+	{
+		GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
+		foreach (GameObject enemy in enemies) {
+			CapsuleCollider2D colliderEnemyBody = enemy.GetComponent<CapsuleCollider2D> ();
+			Physics2D.IgnoreCollision (colliderBody, colliderEnemyBody, true);
+			Physics2D.IgnoreCollision (colliderHead, colliderEnemyBody, true);
+
+			CircleCollider2D colliderEnemyHead = enemy.GetComponent<CircleCollider2D> ();
+			Physics2D.IgnoreCollision (colliderHead, colliderEnemyHead, true);
+			Physics2D.IgnoreCollision (colliderBody, colliderEnemyHead, true);
+		}
 	}
 	
 	// Update is called once per frame

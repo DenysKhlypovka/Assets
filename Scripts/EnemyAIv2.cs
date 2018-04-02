@@ -12,6 +12,11 @@ public class Fsm {
 		action = _action;
 	}
 
+	public ActionFSM GetState()
+	{
+		return action;
+	}
+
 	public void Act()
 	{
 		action ();
@@ -24,7 +29,6 @@ public enum behaviourList
 	Patrol,
 	Idle,
 	WatchTV,
-	WatchTVSmoke,
 	Toilet
 };
 
@@ -37,7 +41,9 @@ public class EnemyAIv2 : MonoBehaviour {
 	private Fsm fsm;
 	private Animator anim;
 	private GameObject bulletEmitter;
+	private LevelControllerDemo levelController;
 
+	public float triggerDistance = 5f;
 	public float bulletForceDiv;
 	public float maxSpeed = 4f;
 	public float patrolDistance = 10f;
@@ -45,6 +51,7 @@ public class EnemyAIv2 : MonoBehaviour {
 	public float maxPursueTime = 1f;
 	public float flipDelay = 1f;
 	public float toilettingTime = 2f;
+	public float smokingCooldown = 10f;
 	public behaviourList behList;
 	public GameObject bullet;
 
@@ -67,16 +74,19 @@ public class EnemyAIv2 : MonoBehaviour {
 	private bool isChangingFloor = false;
 	private bool isPursuing = false;
 	private bool isFlipEnabled = true;
+	private bool isInSmokingCooldown = false;
 
 	private bool passiveState = false;
 
 	// Use this for initialization
 	void Start () {
 
+		levelController = GameObject.FindWithTag ("LevelControllerDemo").GetComponent<LevelControllerDemo>();
 		anim = GetComponent<Animator>();
 		playerScript = GameObject.FindWithTag ("Player").GetComponent<CharacterControllerScript>();
 		controller = gameObject.GetComponent<EnemyController> ();
 		rb = gameObject.GetComponent<Rigidbody2D> ();
+
 		fsm = new Fsm ();
 		switch (behList.ToString ()) {
 		case "Patrol":
@@ -88,11 +98,6 @@ public class EnemyAIv2 : MonoBehaviour {
 		case "WatchTV":
 			fsm.SetState (Idle);
 			animBool = "WatchingTV";
-			passiveState = true;
-			break;
-		case "WatchTVSmoke":
-			fsm.SetState (Idle);
-			animBool = "WatchingTVSmoking";
 			passiveState = true;
 			break;
 		case "Toilet":
@@ -124,14 +129,25 @@ public class EnemyAIv2 : MonoBehaviour {
 		resetState ();
 	}
 
+	IEnumerator Smoking()
+	{
+		isInSmokingCooldown = true;
+		yield return new WaitForSecondsRealtime(smokingCooldown);
+		isInSmokingCooldown = false;
+		Smoke ();
+	}
+
+	private void Smoke()
+	{
+		anim.SetTrigger ("WatchingTVSmoking");
+	}
+
 	void resetState(){
 
 		passiveState = false;
 		anim.SetBool (animBool, false);
 		isIdle = false;
 		StopCoroutine (Idling());
-		animBool = "Patrol";
-		fsm.SetState (Patrol);
 	}
 
 	
@@ -152,17 +168,18 @@ public class EnemyAIv2 : MonoBehaviour {
 	private void Patrol()
 	{
 		float x = transform.position.x;
-//		Debug.Log ("Patrol");
+		Debug.Log ("Patrol");
 
 		if (isPlayerDetected) {
 			fsm.SetState (Attack);
 			return;
 		}
-	//	Debug.Log ($"X: {Mathf.Floor (x)}; RPP: {Mathf.Floor (rightPosPatrol)}; LPP: {Mathf.Floor (leftPosPatrol)}");
 		if (controller.GetImpassable() || 
 			(Mathf.Floor (x) == Mathf.Floor (rightPosPatrol) && isFacingRight) ||
 			(Mathf.Floor (x) == Mathf.Floor (leftPosPatrol) && !isFacingRight)) {
 
+
+		//	Debug.Log ($"Impassable: {controller.GetImpassable()}; X: {Mathf.Floor (x)}; RPP: {Mathf.Floor (rightPosPatrol)}; LPP: {Mathf.Floor (leftPosPatrol)}");
 
 			fsm.SetState (Idle);
 			return;
@@ -194,7 +211,7 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void MoveTo()
 	{
-	//	Debug.Log ("MoveTo");
+		Debug.Log ("MoveTo");
 
 		if (isPlayerDetected) {
 			fsm.SetState (Attack);
@@ -203,6 +220,7 @@ public class EnemyAIv2 : MonoBehaviour {
 		
 		if ((Mathf.Floor (transform.position.x) == Mathf.Floor (targetX)) &&
 			(Mathf.Floor (transform.position.y) == Mathf.Floor (targetY))) {
+
 			fsm.SetState (Idle);
 
 			return;
@@ -226,16 +244,25 @@ public class EnemyAIv2 : MonoBehaviour {
 				controller.Flip();
 			}
 		}
-
-
+			
 
 		Move ();
 	}
 
 	public void Trigger(float _targetX, float _targetY)
 	{
+		if (isPlayerDetected || isPursuing) {
+			return;
+		}
+
 		targetX = _targetX;
 		targetY = _targetY;
+
+		if (Mathf.Abs (targetX - transform.position.x) > triggerDistance ||
+		    Mathf.Abs (targetY - transform.position.y) > triggerDistance) {
+
+			return;
+		}
 
 		StopAllCoroutines ();
 		isIdle = false;
@@ -284,6 +311,7 @@ public class EnemyAIv2 : MonoBehaviour {
 
 	private void Idle(){
 
+		Debug.Log ("Idle");
 
 		if (isPlayerDetected) {
 			isIdle = false;
@@ -293,8 +321,11 @@ public class EnemyAIv2 : MonoBehaviour {
 				anim.SetBool(animBool, false);
 			return;
 		}
+	
 
 		if (passiveState) {
+			if (animBool == "WatchingTV" && !isInSmokingCooldown)
+				StartCoroutine (Smoking());
 			anim.SetBool (animBool, true);
 			return;
 		}
@@ -448,6 +479,8 @@ public class EnemyAIv2 : MonoBehaviour {
 		//Tell the bullet to be "pushed" forward by an amount set by Bullet_Forward_Force.
 		Temporary_RigidBody.AddForce(direction / bulletForceDiv);
 
+
+		levelController.TriggerEnemies (playerScript.transform.position.x, playerScript.transform.position.y);
 		//Basic Clean Up, set the Bullets to self destruct after 10 Seconds, I am being VERY generous here, normally 3 seconds is plenty.
 		Destroy(Temporary_Bullet_Handler, 10.0f);
 
