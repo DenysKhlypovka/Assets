@@ -9,8 +9,8 @@ public class CharacterControllerScript : MonoBehaviour
 	private float deathAnimDuration; 
 
 	private static bool IsInputEnabled = true;
-	private Vector3 translation = new Vector3(0, 0, 2f);
-	private Vector3 translationUnhide = new Vector3(0, 0, -2f);
+	private Vector3 translation = new Vector3(0, 0, 7f);
+	private Vector3 translationUnhide = new Vector3(0.9f, 0, -7f);
 
 	private CapsuleCollider2D collider;
 	private Rigidbody2D rb;
